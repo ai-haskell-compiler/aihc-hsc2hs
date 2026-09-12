@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 spec = importlib.util.spec_from_file_location('compare', Path(__file__).parents[1] / 'tools/compare.py')
@@ -73,6 +74,29 @@ class ComparisonTests(unittest.TestCase):
         expected['counts']['candidate_failures'] = 1
         with self.assertRaises(ValueError): compare.assert_expected(result, expected)
 
+    def test_parallel_results_keep_order_and_counts(self):
+        for name in ['ok', 'diverge', 'no-output']:
+            self.add(name)
+        sequential = self.run_config()
+        self.config['workers'] = 3
+        parallel = compare.run_suite(self.config, self.root / 'parallel')
+        self.assertEqual(parallel, sequential)
+
+    def test_corpus_failure_cannot_move_between_files(self):
+        first = self.add('ok', corpus_id='first')
+        second = self.add('diverge', corpus_id='second')
+        inventory = self.root / 'inventory.json'
+        inventory.write_text(json.dumps({'files': [{'id': 'first'}, {'id': 'second'}]}))
+        self.config.update(corpus=str(inventory), matrix=[{'target': 'test-target', 'mode': 'native'}])
+        before = self.run_config()
+        (Path(first['context']) / 'Input.hsc').write_text('diverge')
+        (Path(second['context']) / 'Input.hsc').write_text('ok')
+        after = compare.run_suite(self.config, self.root / 'swapped')
+        self.assertEqual(before['counts'], after['counts'])
+        self.assertNotEqual(before['verified_match_ids'], after['verified_match_ids'])
+        with self.assertRaises(ValueError):
+            compare.assert_expected(after, before)
+
     def test_missing_executable_is_not_cross_unsupported(self):
         self.add('ok', 'cross')
         self.config['reference'] = [str(self.root / 'missing')]
@@ -82,8 +106,14 @@ class ComparisonTests(unittest.TestCase):
         with self.assertRaises(ValueError): compare.assert_expected(result, result)
 
     def test_timeout_fails_even_if_baselined(self):
-        self.add('timeout', timeout=0.5)
-        result = self.run_config()
+        self.add('timeout')
+        invoke = compare.invoke
+        # Only the intentionally sleeping candidate gets a short deadline.
+        # A busy corpus build must not make Python startup in the oracle flaky.
+        def bounded(argv, cwd, env, timeout):
+            return invoke(argv, cwd, env, 0.5 if 'candidate' in argv else timeout)
+        with patch.object(compare, 'invoke', side_effect=bounded):
+            result = self.run_config()
         self.assertEqual(result['counts']['tool_errors'], 1)
         with self.assertRaises(ValueError): compare.assert_expected(result, result)
 

@@ -23,16 +23,22 @@ emitter. This oracle behavior is isolated from the candidate. Cross reference
 invocations use `--cross-compile` and the same target compiler/context as the
 candidate.
 
-Suggested pure Haskell boundaries (design sketches, not existing exports):
+The MVP public API has these pure boundaries:
 
 ```haskell
-prepare :: GenerationConfig -> SourceName -> HscSource
-        -> Either Diagnostic (ProbeSources, ReconstructionPlan)
-decodeAnswers :: ObjectFormat -> ByteString
-              -> Either Diagnostic Answers
-finish :: ReconstructionPlan -> Answers
-       -> Either Diagnostic GeneratedSources
+prepare :: FilePath -> String -> Either Diagnostic (String, Plan)
+prepareWithStyle :: OutputStyle -> FilePath -> String
+                 -> Either Diagnostic (String, Plan)
+decodeAnswers :: ByteString -> Either String (Map Int Answer)
+finish :: Plan -> Map Int Answer -> Either Diagnostic String
+generate :: Config -> FilePath -> String -> IO (Either Diagnostic String)
 ```
+
+`Config` contains a `Target`, Clang executable, compiler flags, timeout, and
+upstream output style. `NativeStyle` hoists C preprocessor setup like the native
+oracle; `CrossStyle` keeps its sequential setup and different output pragmas.
+Neither style executes compiled code. `Plan` is opaque; parsed tokens and
+decoded answers are exposed for library use. These interfaces are experimental.
 
 Generation settings explicitly contain source names, target settings, includes,
 definitions and template semantics. Discovery of tool binaries, sysroots and
@@ -40,16 +46,22 @@ headers belongs in the IO layer. Keep temporary host paths out of logical names.
 
 ## Answer records
 
-Use a versioned, validated record with a magic value, query IDs, kinds, lengths
-and payloads. Generate scalar and byte-array constant initializers that Clang can
+The MVP uses fixed 24-byte records: four magic/version bytes (`HSC`, version 1),
+a four-byte little-endian query ID, one kind byte, one negative flag, six reserved
+zero bytes, and an eight-byte little-endian value. Kind zero records mark active
+source fragments/branches; kind one records carry query answers. ID zero is a
+required sentinel. The reconstruction plan checks missing and unexpected IDs.
+Records live in `aihc_ans` (ELF/COFF) or `__aihc_ans` (Mach-O).
+Generate scalar and byte-array constant initializers that Clang can
 evaluate using the target ABI. Encode integers into an explicit byte order;
 record signedness and width instead of truncating to the host's integer type.
 Do not use target pointers to refer between record fields. Handle zero-filled
 sections and compiler retention rules explicitly.
 
-Locate the record through the object format's section/symbol metadata, not
+The MVP locates records through section metadata, not
 assumed file offsets or a blind search for magic bytes. ELF, Mach-O, COFF and
-WebAssembly need separate container handling. Reject malformed, incomplete,
+WebAssembly need separate container handling (WebAssembly remains unimplemented).
+Reject malformed, incomplete,
 duplicate, unexpected or relocation-dependent answers. Test the decoder using
 malformed bytes and multiple actual Clang targets.
 

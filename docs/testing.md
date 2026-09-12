@@ -1,8 +1,28 @@
 # Nix comparison contract
 
-`nix flake check` currently runs the corpus integrity check, harness unit tests,
-and upstream mode smoke tests. It does **not** claim full candidate coverage.
-The compiler executable and real package contexts are the next development work.
+`nix flake check` runs corpus integrity checks, harness unit tests, upstream mode
+smoke tests, the Haskell library unit tests, and the MVP candidate comparisons.
+On the measured ARM64 hosts it also runs the full-inventory corpus assertions
+described in [corpus contexts](corpus-contexts.md). Passing these assertions means
+coverage matches the reviewed baseline; it does not mean every file passes.
+
+`nix build .#mvp-tests` retains per-case commands, diagnostics, artifacts and
+diffs. `tests/mvp.py` declares eleven feature fixtures with exact zero failure
+and divergence counts in native mode and both upstream cross backends
+(classic and `--via-asm`): 33 comparisons. Darwin adds both backends for the
+real x86-64 cross target using the Nix Apple SDK, for 55 comparisons total. All invocations share compiler, sysroot and language flags; the
+candidate also receives explicit target arguments and the matching output mode.
+Every case first compiles the real fixture header as a target preflight.
+
+The unit suite covers each numeric/layout rendering rule, source parsing,
+answer completeness and malformed objects. Independently constructed COFF and
+little/big-endian ELF objects test decoding without relying on host byte order.
+Native integration exercises the host format; the Darwin cross job additionally
+exercises x86-64 Mach-O. These tests do not establish a Windows package/sysroot
+matrix or full ELF ABI coverage.
+
+When testing an uncommitted checkout with new files, use `nix flake check path:.`
+and `nix build path:.#stackage-hsc` so Nix includes untracked source files.
 
 ## Configuring a suite
 
@@ -32,7 +52,10 @@ native mode: it always inspects target objects. `candidate_flags` and
 `reference_flags` allow deliberate tool-specific CLI adapters. `env` is an
 optional map at suite or case scope.
 
-The eventual candidate CLI should accept the common hsc2hs options used here,
+The MVP CLI accepts output, include, define, compiler and compiler-flag options.
+It additionally requires `--target` and `--sysroot` in `candidate_flags`;
+cross cases must pass `--cross-compile` there to match upstream output pragmas.
+The eventual candidate CLI should accept the other common hsc2hs options used here,
 including explicit Clang `--cc` and repeated `--cflag` / `--lflag` as appropriate.
 Link flags may be relevant to reference execution, but the candidate never links
 and runs probes. Keep codegen-affecting options identical.
@@ -75,7 +98,8 @@ if someone writes their counts into the expected JSON. Native reference failure
 is likewise a hard error.
 
 The result contains exact aggregate and per-target/mode counters, ordered case
-IDs and explicit inapplicable entries. Expected files use exactly the same
+IDs and explicit inapplicable entries. Corpus reports additionally assert each
+file’s failure categories and the exact list of verified matches. Expected files use exactly the same
 schema as `summary.json`; missing/extra counters or changed case lists fail.
 Only compare bytes when both tools succeed; a candidate failure is not also
 counted as a divergence. Cross failures are partitioned into explicit unsupported

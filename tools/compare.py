@@ -5,11 +5,13 @@ Only the native reference is allowed to run compiled input code. The runner
 executes tool commands; the candidate implementation must enforce compile-only.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import difflib
 import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import tempfile
 from pathlib import Path
@@ -24,13 +26,26 @@ UNSUPPORTED = re.compile(r'directive\s+.+?\s+cannot be handled in cross-compilat
 
 def invoke(argv, cwd, env, timeout):
     try:
-        result = subprocess.run(argv, cwd=cwd, env=env, capture_output=True,
-                                timeout=timeout, check=False)
-        return {'argv': argv, 'exit': result.returncode,
-                'stdout': result.stdout.decode('utf-8', errors='replace'),
-                'stderr': result.stderr.decode('utf-8', errors='replace'),
-                'error': 'signal' if result.returncode < 0 else None}
-    except (OSError, subprocess.TimeoutExpired) as exc:
+        with subprocess.Popen(argv, cwd=cwd, env=env, stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE, start_new_session=os.name == 'posix') as process:
+            error = None
+            try:
+                stdout, stderr = process.communicate(timeout=timeout)
+            except subprocess.TimeoutExpired:
+                # hsc2hs starts compiler children. Killing only hsc2hs leaves
+                # those children running and can keep the output pipes open.
+                if os.name == 'posix':
+                    os.killpg(process.pid, signal.SIGKILL)
+                else:
+                    process.kill()
+                stdout, stderr = process.communicate()
+                error = 'TimeoutExpired'
+                stderr += f'\nTimed out after {timeout} seconds'.encode()
+            return {'argv': argv, 'exit': None if error else process.returncode,
+                    'stdout': stdout.decode('utf-8', errors='replace'),
+                    'stderr': stderr.decode('utf-8', errors='replace'),
+                    'error': error or ('signal' if process.returncode < 0 else None)}
+    except OSError as exc:
         return {'argv': argv, 'exit': None, 'stdout': '', 'stderr': str(exc),
                 'error': type(exc).__name__}
 
@@ -82,7 +97,8 @@ def run_suite(config, destination):
     counters = {key: 0 for key in COUNTERS}
     results = []
     by_cell = {}
-    for index, case in enumerate(cases):
+    def run_case(index_case):
+        index, case = index_case
         counts = {key: 0 for key in COUNTERS}
         counts['cases'] = 1
         report = {'id': case['id'], 'target': case['target'], 'mode': case['mode']}
@@ -158,15 +174,37 @@ def run_suite(config, destination):
                         (case_output / 'difference.patch').write_text(''.join(diff))
         report['counts'] = counts
         (case_output / 'result.json').write_text(json.dumps(report, indent=2) + '\n')
-        results.append(report)
-        cell = case['target'] + '/' + case['mode']
+        return report
+    workers = config.get('workers', 1)
+    if not isinstance(workers, int) or workers < 1:
+        raise ValueError('workers must be a positive integer')
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        results = list(pool.map(run_case, enumerate(cases)))
+    for report in results:
+        cell = report['target'] + '/' + report['mode']
         cell_counts = by_cell.setdefault(cell, {key: 0 for key in COUNTERS})
         for key in COUNTERS:
-            counters[key] += counts[key]
-            cell_counts[key] += counts[key]
+            counters[key] += report['counts'][key]
+            cell_counts[key] += report['counts'][key]
     summary = {'counts': counters, 'by_target_mode': by_cell,
                'inapplicable': config.get('inapplicable', []),
                'case_ids': [r['id'] for r in results]}
+    if 'corpus' in config:
+        # Per-file assertions prevent a new failure cancelling an improvement.
+        # A successful candidate with a failed oracle is never a verified match.
+        summary['outcome_ids'] = {
+            key: [r['id'] for r in results if r['counts'][key]]
+            for key in COUNTERS if key != 'cases'
+        }
+        summary['verified_match_ids'] = [r['id'] for r in results
+            if all(r.get(role, {}).get('success', False) for role in ('candidate', 'reference'))
+            and not r['counts']['divergences']]
+        cross_cases = [c for c in cases if c['mode'] == 'cross']
+        if cross_cases:
+            summary['reference_backend_ids'] = {
+                backend: [c['id'] for c in cross_cases if c.get('reference_backend', 'classic') == backend]
+                for backend in sorted({c.get('reference_backend', 'classic') for c in cross_cases})
+            }
     (destination / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
     return summary
 

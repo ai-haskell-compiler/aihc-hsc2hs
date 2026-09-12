@@ -1,0 +1,1180 @@
+[
+  {
+    "package": "HSvm-1.0.3.35",
+    "file": "HSvm.cabal",
+    "sha256": "1486803a0b0f0ba68878c9aef0ad394bfef739ead8f441060f1e1bb8f2f5447f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "HsOpenSSL-0.11.7.11",
+    "file": "HsOpenSSL.cabal",
+    "sha256": "d04d57342c8af431f9b53d74448428d71818b3ea564af2e871a28dfb31a0d88d",
+    "flags": {
+      "fast-bignum": false
+    },
+    "archive": true
+  },
+  {
+    "package": "HsOpenSSL-x509-system-0.1.0.4",
+    "file": "HsOpenSSL-x509-system.cabal",
+    "sha256": "86be72558de4cee8f4e32f9cb8b63610d7624219910cfc205a23326078658676",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "Win32-2.14.1.0",
+    "file": "Win32.cabal",
+    "sha256": "983e8882ad5663fc3b738044dbebfe42fd4e37f7f3d7c7e0b085702c9ece6d9f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "Win32-notify-0.3.0.3",
+    "file": "Win32-notify.cabal",
+    "sha256": "35de0b0236387db13db5881a89245d50b2f3b56d12fecd685706381d15267643",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "X11-1.10.3",
+    "file": "X11.cabal",
+    "sha256": "0d1dfe1034a3bbed5cd5657b7d825b07e4a01d6efe75e118e082f5650a46af00",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/X11-1.10.3/revision/1.cabal"
+  },
+  {
+    "package": "X11-xft-0.3.4",
+    "file": "X11-xft.cabal",
+    "sha256": "e08bd69d24c40f1a33e6c87964f200656da77ad6a1fbdf6a4073dcb967e65599",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "Xauth-0.1",
+    "file": "Xauth.cabal",
+    "sha256": "d52f52e49080c74d5fe302c009d84e14827b80d17ebc029dea93104f46adb1c1",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "alsa-pcm-0.6.1.2",
+    "file": "alsa-pcm.cabal",
+    "sha256": "83f9ef396dcd1eb115eda11ab8549fe5d16af37613c5987f5be244e7cf61d259",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "alsa-seq-0.6.0.10",
+    "file": "alsa-seq.cabal",
+    "sha256": "1dd356885e1c53dd4475c384c596d22728c91f60e4c763e7e8915b0564fd5f9d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "ansi-terminal-1.1.5",
+    "file": "ansi-terminal.cabal",
+    "sha256": "408d9232e5304efead718f96138d6d7eb2da608c6121c5c0dc6a71a833b14320",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "base-4.20.2.0",
+    "file": "base.cabal",
+    "sha256": "3a6ae353944fe4a34901d91eed2a67b898acd35cb2948d8f8767724138d5cb71",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "basement-0.0.16",
+    "file": "basement.cabal",
+    "sha256": "e9458cbe67f396fb81900ec65852a582a2b7febd09b17a85adee576c8d7cc321",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "bindings-GLFW-3.3.9.3",
+    "file": "bindings-GLFW.cabal",
+    "sha256": "64cc6e06a45f44be2c607bd81cd6157de27705d32d0dc4033672556118634f6a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "bindings-libzip-1.0.1",
+    "file": "bindings-libzip.cabal",
+    "sha256": "9c29e4caf0a9ede14b42dd78730ae412faf1df939123ad415e06e84e1dff901d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "bindings-uname-0.1",
+    "file": "bindings-uname.cabal",
+    "sha256": "1e7276ad5fe397ab82086a4f9218804b72e62716c0153f5271c706d54d89b9b6",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "brotli-0.0.0.3",
+    "file": "brotli.cabal",
+    "sha256": "851504c4547f9174e3002881d16e2322bb5b5c9897da76c43515b7e5b912dd04",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "btrfs-0.2.1.0",
+    "file": "btrfs.cabal",
+    "sha256": "05206e8912ca8e180300da1df0a4bc858776af1fa3513d246089fd21dc9070f7",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "bzlib-0.5.3.0",
+    "file": "bzlib.cabal",
+    "sha256": "ef79faffc1b56f7b5d38ba12473fa48067ee21bd4428fda29f80057f6f7d9d3f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "bzlib-conduit-0.3.0.4",
+    "file": "bzlib-conduit.cabal",
+    "sha256": "fa7434b2224e6924e7419846cbc760f77a3759e431b6fd206abd35d107ea4f37",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "c-struct-0.1.3.0",
+    "file": "c-struct.cabal",
+    "sha256": "92b587b98a8fe00fd2cf293bfaf6ebac21d01c5e4f254507b34c1885241a4b59",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "c14n-0.1.0.3",
+    "file": "c14n.cabal",
+    "sha256": "a8a22fc82524479934149b319c7cdcc1964cb4caa664105ae65c5eb445cdf248",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/c14n-0.1.0.3/revision/1.cabal"
+  },
+  {
+    "package": "cairo-image-0.1.0.6",
+    "file": "cairo-image.cabal",
+    "sha256": "13c3be4b6ffa4e1c009b847b270c9962b1dd03c633a3506b8b3c240ff9ff7c80",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "check-email-1.0.2",
+    "file": "check-email.cabal",
+    "sha256": "ca97466ec7fde38d42202916859171f19ce3d1bb0b3437135b902a2a64d01e5c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "clock-0.8.4",
+    "file": "clock.cabal",
+    "sha256": "b938655b00cf204ce69abfff946021bed111d2609a9f7a9c22e28a1a202e9115",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "cmark-0.6.1",
+    "file": "cmark.cabal",
+    "sha256": "5994e5d56d286e857063375154eac4128aea835ec867955963c27237823b8085",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/cmark-0.6.1/revision/1.cabal"
+  },
+  {
+    "package": "cmark-gfm-0.2.6",
+    "file": "cmark-gfm.cabal",
+    "sha256": "8672b9388f5ddfa8ece691e59b4272fa807a2ddf0698970cd73af9bebb98058d",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/cmark-gfm-0.2.6/revision/1.cabal"
+  },
+  {
+    "package": "code-page-0.2.1",
+    "file": "code-page.cabal",
+    "sha256": "fe596b0f421abd2894fdb7049b3d76230eb1de6e04e9f635e2695dd55ded856e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "coinor-clp-0.0.0.2",
+    "file": "coinor-clp.cabal",
+    "sha256": "1247aaf14cf826236923a8c3d2692830a56a9fa1ce00d36da59e57bb8fe536ce",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/coinor-clp-0.0.0.2/revision/2.cabal"
+  },
+  {
+    "package": "conduit-1.3.6.1",
+    "file": "conduit.cabal",
+    "sha256": "4e5be34eeff16646eb7e13471c7ae7e8db59a3f7cc3125ecb1fc0ae3632baac9",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "cryptonite-openssl-0.7",
+    "file": "cryptonite-openssl.cabal",
+    "sha256": "b737e9454fa8da7dc9a0ca1d57bf76b2b11d3c8c3b2c694f82c808fce8e253e4",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "digest-0.0.2.1",
+    "file": "digest.cabal",
+    "sha256": "938215f33ed3546dc2f059f3707f7370e9e9e1c0285cac16379ebfa45e9054c0",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "direct-sqlite-2.3.29",
+    "file": "direct-sqlite.cabal",
+    "sha256": "6ff3969a6eae383c8a9ab093abfee7f7b0ed76dab045c984a1497b7e1d71279d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "directory-1.3.8.5",
+    "file": "directory.cabal",
+    "sha256": "fbeec9ec346e5272167f63dcb86af513b457a7b9fc36dc818e4c7b81608d612b",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "discount-0.1.1",
+    "file": "discount.cabal",
+    "sha256": "1473f57c0c95cd707175da2db9e3cb3e65837e5960844313a674d9382aa9979f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "disk-free-space-0.1.0.1",
+    "file": "disk-free-space.cabal",
+    "sha256": "71ac4e0b1a2917e1c5d9dc43c84fdfac1ec7d0d7648582d94e1ce69199971c74",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/disk-free-space-0.1.0.1/revision/3.cabal"
+  },
+  {
+    "package": "download-0.3.2.7",
+    "file": "download.cabal",
+    "sha256": "eb22654544f55a76a36be0215311fda9d64da53008d6db98a6aa6da734c89508",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "ekg-core-0.1.2.0",
+    "file": "ekg-core.cabal",
+    "sha256": "5d0a5ed6470aed6a5696dbcad334f869e1757750d8900d5355c847039a0bca6e",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/ekg-core-0.1.2.0/revision/1.cabal"
+  },
+  {
+    "package": "emacs-module-0.2.1.1",
+    "file": "emacs-module.cabal",
+    "sha256": "a9af04dcefd468ebf0f635e8974a6e0ad1a3b4975a0ccb784f49879a09f91d33",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "fft-0.1.8.7",
+    "file": "fft.cabal",
+    "sha256": "9f2654c4c9844b0121c214bf4e7fcea7079559fd5d6fc8ef96e8b0470bc8ec8b",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/fft-0.1.8.7/revision/1.cabal"
+  },
+  {
+    "package": "fftw-ffi-0.1",
+    "file": "fftw-ffi.cabal",
+    "sha256": "7a293fe3f1d9c3f13a4c72e3838a73f44cd168ef3475d35a745cbeabce2d2000",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "file-io-0.1.6",
+    "file": "file-io.cabal",
+    "sha256": "5e3466f15993e499db47d79d09c519d6d37c143cfe94fb46dd218bf2f6f3fd39",
+    "flags": {
+      "os-string": true
+    },
+    "archive": true
+  },
+  {
+    "package": "filelock-0.1.1.9",
+    "file": "filelock.cabal",
+    "sha256": "78f1a3e3af8030368d12a245b05747c0a11e02b0e3c9978be86b8214b63bea0c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "foundation-0.0.30",
+    "file": "foundation.cabal",
+    "sha256": "f9107086a049503e5a76a9abf17ec08d14745d4a0e14ca69f18a3f966e3b85c7",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "freetype2-0.2.0",
+    "file": "freetype2.cabal",
+    "sha256": "48a08025a1baae6cefd3462ee79a9d7ff2bad438ccc533dcda6b84da577e1fdc",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "fsnotify-0.4.4.0",
+    "file": "fsnotify.cabal",
+    "sha256": "21cc696377bf01bc9b0a2e1edf2e03e43f6655d52d0622bdb493192820e1a5ba",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "gd-3000.7.3",
+    "file": "gd.cabal",
+    "sha256": "fe5b227b873fe1f78f15866e7db9bcd18cba58d92373bd6f2c44f78c194f6757",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "ghc-heap-9.10.3",
+    "file": "ghc-heap.cabal",
+    "sha256": "df5685d50d17c41d7b86a5365f06d626bd619256010ebdf2beb4c1143b2876a5",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "ghc-internal-9.1003.0",
+    "file": "ghc-internal.cabal",
+    "sha256": "295452893e0cb58c175a49bd83c22afec0dc25637bd2eaef938eaf944ad3fb8e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "ghc-lib-parser-9.12.3.20251228",
+    "file": "ghc-lib-parser.cabal",
+    "sha256": "12859d47645e86dad0244897d5b130fb43576f5b83d93fec7806daef3fef7959",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "gio-0.13.12.0",
+    "file": "gio.cabal",
+    "sha256": "21ce6bf966d0139e9cb86be1f38c677a8e5090194cd5995df08b44ccec8c383c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "glib-0.13.12.0",
+    "file": "glib.cabal",
+    "sha256": "11fac86a93aad210446c8c8802f52969675e5eccaed4ed5ba471e35cd37f8bbe",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "glib-stopgap-0.1.0.1",
+    "file": "glib-stopgap.cabal",
+    "sha256": "c196b54b50b39bdfe02b9819d1d39665c5251ab27113beb3dc07e67867fcc3b2",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "glob-posix-0.2.0.1",
+    "file": "glob-posix.cabal",
+    "sha256": "438df35fc614ea9d355ec1390046d7abcc8afabf23f8e589abc2c9ef54b705be",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "glpk-headers-0.5.1",
+    "file": "glpk-headers.cabal",
+    "sha256": "aee8ee64f5fa4fb42e528a3f2fb6c68643c6f6da38449277ccfbe0b4964c2b58",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "gtk-0.15.10",
+    "file": "gtk.cabal",
+    "sha256": "5545ed2493921b55c3ede6cd71e0d018b987bdf165065f5231ec0222727ab4e2",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "gtk3-0.15.10",
+    "file": "gtk3.cabal",
+    "sha256": "4652b389674d3bcd1c3240e6dbd5a6d16a3b98b064f43df358dafe154bbbe187",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hashable-1.5.1.0",
+    "file": "hashable.cabal",
+    "sha256": "140fc5adad166f7b527567cbd26ff481e8da4a66bdfc84be3ddf28dbeb66f275",
+    "flags": {
+      "arch-native": false
+    },
+    "archive": true
+  },
+  {
+    "package": "haskeline-0.8.2.1",
+    "file": "haskeline.cabal",
+    "sha256": "23369899343e5d60fe45263367126ca6bf20e3edc019b53285ef6d020665493a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "haskell-gi-0.26.17",
+    "file": "haskell-gi.cabal",
+    "sha256": "0d502b6e74c4e40849a015280bce01df10d9dd313f1163c6bae92433c3f26b11",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "haskell-gi-base-0.26.9",
+    "file": "haskell-gi-base.cabal",
+    "sha256": "dad5294c37cc21c93c1db411183442d8a001d2687b6b3a34a45474fc72971372",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hasql-1.9.3.1",
+    "file": "hasql.cabal",
+    "sha256": "197db83021af90a9ae0e85e1f766ae6873fe0b82a12605aa28861b2bc62cf701",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hidapi-0.1.8",
+    "file": "hidapi.cabal",
+    "sha256": "6276c2a14dd5b8d09c15a45544c1b3eb8508846dd5c0ab0c592a6401b9075a67",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hinotify-0.4.2",
+    "file": "hinotify.cabal",
+    "sha256": "dc4c45544e1920864882ee1b332d78960cdb9f7b706983f6eab3c9dabda4fa9e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hlibcpuid-0.2.0",
+    "file": "hlibcpuid.cabal",
+    "sha256": "c1edc663146913f9ff2f2a3dbb0654c6c0e018d44b928110df99cb4247a3b154",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hlibgit2-0.18.0.16",
+    "file": "hlibgit2.cabal",
+    "sha256": "bb91169b44a3c2fa1426233075e1961699bb3411f43ba875e4599e37929b40cb",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hmatrix-special-0.19.0.0",
+    "file": "hmatrix-special.cabal",
+    "sha256": "09cc1020ea21d28570cff9e98164773cddb7d757aaf20aff5b59458204bd83c4",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hmpfr-0.4.5",
+    "file": "hmpfr.cabal",
+    "sha256": "7df683df63a2893f1f3033edf0d9f389e49cac0322e7cc721aa3e5d54e4523bc",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hopenssl-2.2.5",
+    "file": "hopenssl.cabal",
+    "sha256": "5ed7614d5a1fdfc1a96e399a6dbfb5da307bfd061030e0201e56fc259b3eec71",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hpc-0.7.0.2",
+    "file": "hpc.cabal",
+    "sha256": "1c3c300837615288e9fe2e691f26bc8b047550c4bd2dd8dace55a58049ee1ec3",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hpqtypes-1.12.0.0",
+    "file": "hpqtypes.cabal",
+    "sha256": "2ce9d400cfe123de76d8d51cb8c220a0f4a53e40c4e2adb11f61242b1542cbcc",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hruby-0.5.1.0",
+    "file": "hruby.cabal",
+    "sha256": "408680e3505a1fc06270c27a14b3ea487dbc677fa725002ad944ece2b4038b8f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hs-GeoIP-0.3",
+    "file": "hs-GeoIP.cabal",
+    "sha256": "4eff78b273799b60b5dcb9ee610e32d26aa563bf171ab77be308fd44753bb634",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hs-bibutils-6.10.0.0",
+    "file": "hs-bibutils.cabal",
+    "sha256": "0c10b9829c821eb78b74c2bd760945d5d9e5fbde1038e0e66f8df3ad960d1f56",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "hsdns-1.8",
+    "file": "hsdns.cabal",
+    "sha256": "f0faf4e05ec97427ca736afa7cb9e183226d316fa8e08aa17b7155ee3b903d26",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/hsdns-1.8/revision/1.cabal"
+  },
+  {
+    "package": "hsyslog-5.0.2",
+    "file": "hsyslog.cabal",
+    "sha256": "0b604c9f3d1bcbe7cd223b1b530110309ae01f2d7c57bc08ffc4fc31ad21324c",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/hsyslog-5.0.2/revision/1.cabal"
+  },
+  {
+    "package": "jack-0.7.2.2",
+    "file": "jack.cabal",
+    "sha256": "ee408dd7e4d2ba995b8e39b77d6ab728a8e8abd849d70f4b74cfcdaeefd984a3",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/jack-0.7.2.2/revision/3.cabal"
+  },
+  {
+    "package": "json-stream-0.4.6.1",
+    "file": "json-stream.cabal",
+    "sha256": "2d70ee82f1517791d570415a6feea41e959ea45e720c469824884fca261aadfa",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "keep-alive-0.2.1.0",
+    "file": "keep-alive.cabal",
+    "sha256": "77c18d13c096932f5ecc350468f277540b0bd804f4a770a45080149599d8a05c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "leveldb-haskell-0.6.5.1",
+    "file": "leveldb-haskell.cabal",
+    "sha256": "2993e51257ab9b09da781451e514a43d7a3b243eec29e400cd26c613f681579d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "libBF-0.6.9",
+    "file": "libBF.cabal",
+    "sha256": "accac0ac718c80db9dc9ef292815f5d14f94e8ad28834532d2c5505b90d26d6b",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "libffi-0.2.1",
+    "file": "libffi.cabal",
+    "sha256": "72b41cefb799f3d3509c6cec8ecbf5023cf442c53a601aaaacee5872c722908b",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "linux-file-extents-0.2.0.1",
+    "file": "linux-file-extents.cabal",
+    "sha256": "2b7041e458735cb1c5a2af26b02720c1de0968a7c3cfd1548e8670cc5710fb0e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "linux-namespaces-0.2.0.1",
+    "file": "linux-namespaces.cabal",
+    "sha256": "859d06c9513520cbc9008bc65e7077ebc3409c8d0c23d8d19c44e53223506495",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "lmdb-0.2.5",
+    "file": "lmdb.cabal",
+    "sha256": "053af6322a1332e9beb310fe4462e72e4b3f931a1a7fff610c030bb322d72010",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "lua-2.3.4",
+    "file": "lua.cabal",
+    "sha256": "df4ee7ebd6d2ac13dd2e419af9bfb5b05b432f2cd638fbd1a6089a4613c9b007",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "lukko-0.1.2",
+    "file": "lukko.cabal",
+    "sha256": "eca91c02ccdc050cd335224af22a31a7d03f9f799a95227f0b8117be43311e1d",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/lukko-0.1.2/revision/2.cabal"
+  },
+  {
+    "package": "lz4-0.2.3.1",
+    "file": "lz4.cabal",
+    "sha256": "9d286f1c8e3e3aab86ebb8cd39b485af57c0a05d9da5baf921641012a3c83cf0",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "lz4-frame-conduit-0.1.0.2",
+    "file": "lz4-frame-conduit.cabal",
+    "sha256": "4231f8161eb5807a800252047b61442f0ce7cdf324b61c429397f65d1d67922d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "lzma-0.0.1.1",
+    "file": "lzma.cabal",
+    "sha256": "0b4ac9917cd84ff512a45936f7fcd8aea60dc76e4a7aee6d7b6a167789477ed1",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/lzma-0.0.1.1/revision/1.cabal"
+  },
+  {
+    "package": "magic-1.1.2",
+    "file": "magic.cabal",
+    "sha256": "d5963dee453ecf23e93362e17556f18ad089ce2649a407388d786bfacadce95c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "memory-0.18.0",
+    "file": "memory.cabal",
+    "sha256": "9f4de967352f80b6f174c9a166f315393dde80b77d7b67e41268ae7dec0319f9",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/memory-0.18.0/revision/1.cabal"
+  },
+  {
+    "package": "mersenne-random-pure64-0.2.2.0",
+    "file": "mersenne-random-pure64.cabal",
+    "sha256": "853f225100e5d8edbedcd21a88590f5b02a4e225f9129a474ac074417e07b85f",
+    "flags": {
+      "small_base": false
+    },
+    "url": "https://hackage-content.haskell.org/package/mersenne-random-pure64-0.2.2.0/revision/1.cabal"
+  },
+  {
+    "package": "minisat-0.1.4",
+    "file": "minisat.cabal",
+    "sha256": "c0aaecbec2383b3bfa836295dbd0e57e6d8cf405fb124ea594f71d303a97ba9e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "mintty-0.1.4",
+    "file": "mintty.cabal",
+    "sha256": "045829806c38221f8e61bba674131147e6ef969882e33b6ce34c39a66e8179be",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "moffy-samples-gtk3-run-0.1.0.7",
+    "file": "moffy-samples-gtk3-run.cabal",
+    "sha256": "cd41984be6c358f530bfab8ecaf97bdcab16b4970c17d993ec0d26e212e9348e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "mountpoints-1.0.2",
+    "file": "mountpoints.cabal",
+    "sha256": "25d53b8024f5c5595ef09ef450c6a168116dd3fed01c1a6ca6f4586d3c2f358d",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "mysql-0.2.1",
+    "file": "mysql.cabal",
+    "sha256": "156061d432d29b3a56037e8a67e16589b1d370fb9ad0dd71a81ea2c4b0b195bb",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "netcode-io-0.0.3",
+    "file": "netcode-io.cabal",
+    "sha256": "e0710bbfead1cede17271e4c2583a301fa8d364e282dbbd8094b02ad76faa5ba",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "nettle-0.3.1.1",
+    "file": "nettle.cabal",
+    "sha256": "d32ecc767e6796da4b0adb5a2a7daa736978b8e7357abae444ab6485745c78aa",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "network-3.2.9.0",
+    "file": "network.cabal",
+    "sha256": "48a0c4f91e460f892c629b76c9410336a978e9b58aa87c678aee587b4ca37698",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "network-bsd-2.8.1.0",
+    "file": "network-bsd.cabal",
+    "sha256": "cc7867f81c6eb3f1924bbb1029757af6e3b67a3c224c1faa329be3ea70ad729c",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/network-bsd-2.8.1.0/revision/6.cabal"
+  },
+  {
+    "package": "network-info-0.2.1",
+    "file": "network-info.cabal",
+    "sha256": "2798c2e4cc2c32108bd4b05efa921ce6f054ebc381c5e465c9bd74c7d538af17",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "network-multicast-0.3.2",
+    "file": "network-multicast.cabal",
+    "sha256": "521547635a6afae408ec25193b3e429082dc0442668dac7ad5cea76ccee39750",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "old-time-1.1.1.0",
+    "file": "old-time.cabal",
+    "sha256": "c86de95249a289c4e68bbc9a090d94b4c38cb70779872745f061e3fa8dd6bedf",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "pango-0.13.12.0",
+    "file": "pango.cabal",
+    "sha256": "c52cb646353aa0d889a066bd9a7d7c0f846fb7b69c8a4a53dfbc6c9ae3725328",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "pantry-0.10.1",
+    "file": "pantry.cabal",
+    "sha256": "f776cd39c211128561a80a865545fd3b7caec9935ceedd7f2d14c341d0b0ca41",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "pcre-light-0.4.1.3",
+    "file": "pcre-light.cabal",
+    "sha256": "1d4202df67a3e65796ecfe60ff9f796172357299e6cf74a6e869692866c44e79",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/pcre-light-0.4.1.3/revision/1.cabal"
+  },
+  {
+    "package": "poll-0.0.0.2",
+    "file": "poll.cabal",
+    "sha256": "58b81442490a9d059330efbd114440492a693a68b2ea4eb941f981cb14daf015",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/poll-0.0.0.2/revision/1.cabal"
+  },
+  {
+    "package": "posix-paths-0.3.0.1",
+    "file": "posix-paths.cabal",
+    "sha256": "2c2b9bd299227837d4479d8e77cc91cc5652f2aa2b1744b3618ebf226e30934a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "postgresql-libpq-0.11.0.0",
+    "file": "postgresql-libpq.cabal",
+    "sha256": "682d17c7bce588902dc01dc255328d8de4c633f98c7837eed8e5f1cc8b445af5",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/postgresql-libpq-0.11.0.0/revision/2.cabal"
+  },
+  {
+    "package": "process-1.6.26.1",
+    "file": "process.cabal",
+    "sha256": "6def2e07c317f52f4d30c43e92f97b7bc5f7c27cb1270d386b15dce429e1180f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "pthread-0.2.1",
+    "file": "pthread.cabal",
+    "sha256": "26b92129849796feab6fc5d88ee4db685407eb75d3f2ac65bdf41cc59752dc10",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "pulse-simple-0.1.14",
+    "file": "pulse-simple.cabal",
+    "sha256": "cd2397c40feb8959cdc6e806987072ce91e388e41427c47ff09ec2a2cfb466f0",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "quicklz-1.5.0.11",
+    "file": "quicklz.cabal",
+    "sha256": "4db281a4f7809e550753919352148ae174bc5ad5154dc84461f3b1497dd11fac",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "regex-pcre-0.95.0.1",
+    "file": "regex-pcre.cabal",
+    "sha256": "3709b4d27411a96ffc765dfa6c989088181eb4616a7e704e833d415d0709e58a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "regex-pcre-builtin-0.95.2.3.8.44",
+    "file": "regex-pcre-builtin.cabal",
+    "sha256": "1e54ce85636856004ff0c5f4e72eddda1678841563f522924ba75ccd362e653f",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/regex-pcre-builtin-0.95.2.3.8.44/revision/7.cabal"
+  },
+  {
+    "package": "regex-posix-0.96.0.2",
+    "file": "regex-posix.cabal",
+    "sha256": "faf170ca5073e8d538a7a18f727a02a96f2a36c5fd53a1696263a70ab81bc6fe",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "reliable-io-0.0.2",
+    "file": "reliable-io.cabal",
+    "sha256": "f618a6dfdc38b1f88df7b85c1b66856c65720aff86494f29415dbf366b30c6e3",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "rocksdb-haskell-1.0.1",
+    "file": "rocksdb-haskell.cabal",
+    "sha256": "3a437ec1cedea56e02ae85a8e37539151c5295cb228117e46aa90767f1072d61",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sandwich-webdriver-0.3.0.1",
+    "file": "sandwich-webdriver.cabal",
+    "sha256": "a31bc6269984092dabeb8137ed54710845a34ab8c6c727b5193448dbfcd9137e",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/sandwich-webdriver-0.3.0.1/revision/1.cabal"
+  },
+  {
+    "package": "sdl2-2.5.6.1",
+    "file": "sdl2.cabal",
+    "sha256": "928f70de4ff7818ff2ff3403200ba63fa8986cf0761b599cef5c4ee201c0a389",
+    "flags": {
+      "recent-ish": false
+    },
+    "archive": true
+  },
+  {
+    "package": "sdl2-gfx-0.3.0.0",
+    "file": "sdl2-gfx.cabal",
+    "sha256": "b849bffb204f461d0fac63eaadc91214e0dff48a6400f24f66a7c6b9611599f1",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sdl2-image-2.1.0.0",
+    "file": "sdl2-image.cabal",
+    "sha256": "777291e9edb09a49628b9b776ebd8e8b25527e46538cec9b2d397638db2a94b7",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sdl2-mixer-1.2.0.0",
+    "file": "sdl2-mixer.cabal",
+    "sha256": "6a6b5a46c035c9e77eaf9c244e45de9e4a9b9a110890cfeeb9fa72faa2419cef",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sdl2-ttf-2.1.3",
+    "file": "sdl2-ttf.cabal",
+    "sha256": "46b4769918ee2e579d0e378ede559729293d1b9dfb5301d29efcf0470b553aa6",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sendfile-0.7.11.6",
+    "file": "sendfile.cabal",
+    "sha256": "9d1988f4276fd49fa2494f0ccc9716bbd4de669d5251d2e8f2f13134d3fc5293",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "setlocale-1.0.0.10",
+    "file": "setlocale.cabal",
+    "sha256": "8ae0283824243e284549d6202084689c4ec5d80ad766484d25b537b30a11bb56",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/setlocale-1.0.0.10/revision/7.cabal"
+  },
+  {
+    "package": "shared-memory-0.2.0.1",
+    "file": "shared-memory.cabal",
+    "sha256": "b8c29d2a016728a5b596f37518cca10b6aec84f1b4bff3f6f3d4299db63ca21a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "simple-cairo-0.1.0.6",
+    "file": "simple-cairo.cabal",
+    "sha256": "3323cf6197c65a24ce9a50a477afa5c9d8061fd80700cdeecb750b70cf4629d4",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "simple-pango-0.1.0.2",
+    "file": "simple-pango.cabal",
+    "sha256": "2678d9983b319fbb9803b913c6d611ed0227cbea8069369263cc1d131777a023",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "simple-sendfile-0.2.32",
+    "file": "simple-sendfile.cabal",
+    "sha256": "133f419b9b6b8a4db8541f381c20b8dfca962a59e82ba203e66d6bef41cf8ea4",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "skein-1.0.9.4",
+    "file": "skein.cabal",
+    "sha256": "863e3b7293f062e2f62c8e7c4c4e95200dbd3662f3bd641d7e250e91544ba2fc",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "snap-server-1.1.2.1",
+    "file": "snap-server.cabal",
+    "sha256": "ef0fa6639a972869445fb2c92dafa09bca5628b8ba03d52f17673745e73261c0",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/snap-server-1.1.2.1/revision/6.cabal"
+  },
+  {
+    "package": "snappy-0.2.0.4",
+    "file": "snappy.cabal",
+    "sha256": "4b03cb6ea9a6f0baf5649646d623b5b123a6747098c959867c9d43ac18b9e8f7",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "socket-0.8.3.0",
+    "file": "socket.cabal",
+    "sha256": "c7c8433770729eef056445b15ceb0e77807ec3b0bea4e47a2f4c609bbeab2638",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/socket-0.8.3.0/revision/2.cabal"
+  },
+  {
+    "package": "soxlib-0.0.3.2",
+    "file": "soxlib.cabal",
+    "sha256": "70c5fa434e7dd4a2d773ff2afb7ecdf16bdaf5a4928b96a12e78d4c903d8032a",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/soxlib-0.0.3.2/revision/1.cabal"
+  },
+  {
+    "package": "splice-0.6.1.1",
+    "file": "splice.cabal",
+    "sha256": "9ed1bab457198534ccb9d93f4457e532aefbca3e5772bd9e603ce508c063c537",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "squeather-0.8.0.0",
+    "file": "squeather.cabal",
+    "sha256": "6073bfa3f9c6978c5b736a60f6dfad367dc9783f2b64ab6981fd874a4c827b76",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "streaming-commons-0.2.3.1",
+    "file": "streaming-commons.cabal",
+    "sha256": "ed7999fea9e912b1211ea93d7e20a7998bf4753166370c94048885650f303bf0",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "streamly-0.10.1",
+    "file": "streamly.cabal",
+    "sha256": "c0cdf0c1e57d8011bd585a0e571b3f92fb10f31458cdc8d466128c24b18af74a",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/streamly-0.10.1/revision/6.cabal"
+  },
+  {
+    "package": "streamly-core-0.2.3",
+    "file": "streamly-core.cabal",
+    "sha256": "6938a36a508794db08d4f6710b05dabc731ce793e61b6c68f17fcd9105c3b060",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sundown-0.6",
+    "file": "sundown.cabal",
+    "sha256": "767dccd2d6661379606c090bc10c92ae5ebc1f252f10c92af507fea7be58299c",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "sysinfo-0.1.1",
+    "file": "sysinfo.cabal",
+    "sha256": "e330bbcbc317fc79c59ef10253c15324d11d8b0f402d13948e3bb9fb1791eb4f",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "terminal-0.2.0.0",
+    "file": "terminal.cabal",
+    "sha256": "de6770ecaae3197c66ac1f0db5a80cf5a5b1d3b64a66a05b50f442de5ad39570",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "terminal-size-0.3.4",
+    "file": "terminal-size.cabal",
+    "sha256": "21d7f1320eeb86177e860ec07a3d8e7510977b1b415a96ebb62ee4ad72955770",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/terminal-size-0.3.4/revision/1.cabal"
+  },
+  {
+    "package": "text-icu-0.8.0.5",
+    "file": "text-icu.cabal",
+    "sha256": "142f695ab8a38c476ba0189ff8b8d81686ea9cdd5f68a1afede9240cb21dc8dc",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/text-icu-0.8.0.5/revision/2.cabal"
+  },
+  {
+    "package": "thyme-0.4.1",
+    "file": "thyme.cabal",
+    "sha256": "e5b4013585633eb0c329dddac7ca8257e794a3745d3c711da0c9b3935f954a51",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/thyme-0.4.1/revision/1.cabal"
+  },
+  {
+    "package": "tidal-link-1.2.2",
+    "file": "tidal-link.cabal",
+    "sha256": "aaf25e5a94196111b42bd9f991b81e72486ba6e2d3fce1182a82ff12e2563a3e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "time-1.12.2",
+    "file": "time.cabal",
+    "sha256": "88e8493d9130038d3b9968a2530a0900141cd3d938483c83dde56e12b875ebc8",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "unix-2.8.7.0",
+    "file": "unix.cabal",
+    "sha256": "1f5f3cf31be1a052ab2d7caebc5185888adeca0c6606c6bc7e45223d09cca9f0",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "unix-bytestring-0.4.0.4",
+    "file": "unix-bytestring.cabal",
+    "sha256": "d6f0cc8916fb75030eff6c95cd833312352536ab9c340fb92a5a1768f04555a7",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "unix-compat-0.7.4.1",
+    "file": "unix-compat.cabal",
+    "sha256": "11793eab07fc5c4e167ae3aa8a8885dc4a9e71cb3b6ac611a7ab9ee29321b6d3",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "unix-time-0.4.17",
+    "file": "unix-time.cabal",
+    "sha256": "234ed86c81a601fe6195d41a46754f4a620dd1b9a515630238360c9f4ac8571a",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "vector-fftw-0.1.4.1",
+    "file": "vector-fftw.cabal",
+    "sha256": "d82f7e5e0d376ebbc95b28d7ab584433e26fc8531fea5cf5e135971a659e87be",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/vector-fftw-0.1.4.1/revision/2.cabal"
+  },
+  {
+    "package": "vector-quicksort-0.2",
+    "file": "vector-quicksort.cabal",
+    "sha256": "18d0999483954286a3f6e46e2896110973d4e04cc9c3523fdbd8dfeaab584400",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "vty-windows-0.2.0.3",
+    "file": "vty-windows.cabal",
+    "sha256": "0c010b1086a725046a8bb08bb1e6bfdfdb3cfe1c72d6fa77c37306ef9ec774d8",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "web3-crypto-1.1.0.0",
+    "file": "web3-crypto.cabal",
+    "sha256": "8b8f8f5c0cc7ea5ed6fe49bcfb7aecbfcda7554b67f57a321fbcbd8496aebe3e",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "webrtc-vad-0.1.0.3",
+    "file": "webrtc-vad.cabal",
+    "sha256": "d19d55f0fd7016552f24198861f703e17bb3e3cf50f41f1fd00a52a6e6efeb50",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "windns-0.1.0.1",
+    "file": "windns.cabal",
+    "sha256": "fc50e2faf0cc43159075b349c3f3e9b922985e2701d80834a670bd0183bf6f61",
+    "flags": {
+      "allow-non-windows": true
+    },
+    "url": "https://hackage-content.haskell.org/package/windns-0.1.0.1/revision/7.cabal"
+  },
+  {
+    "package": "x11-xim-0.0.9.0",
+    "file": "x11-xim.cabal",
+    "sha256": "4404aa037f4df2ef8cd16834c8149d596f09b30379f0b85a3b8db9ddd30fa6b0",
+    "flags": {},
+    "url": "https://hackage-content.haskell.org/package/x11-xim-0.0.9.0/revision/1.cabal"
+  },
+  {
+    "package": "xxhash-ffi-0.3.1",
+    "file": "xxhash-ffi.cabal",
+    "sha256": "284287694901e5192d1586e677943c87dec528dc6fcb60070ad215afd8ef48b6",
+    "flags": {
+      "pkg-config": false
+    },
+    "archive": true
+  },
+  {
+    "package": "yoga-0.0.0.8",
+    "file": "yoga.cabal",
+    "sha256": "5a2232fe68258c3ac752068f185d813775cdc83f98b311dca5239b8199c8b81b",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "zeromq4-haskell-0.8.0",
+    "file": "zeromq4-haskell.cabal",
+    "sha256": "cef7a8f47cc4cbbf30d7a52abf310fcf019113f037be201acee1edcda17f3e9b",
+    "flags": {},
+    "archive": true
+  },
+  {
+    "package": "zlib-0.7.1.1",
+    "file": "zlib.cabal",
+    "sha256": "cf2f8f91b10b635bdaa2c3010f40a5562a06ede24b92d819758e7f1b7d04f9f2",
+    "flags": {
+      "pkg-config": false
+    },
+    "archive": true
+  },
+  {
+    "package": "zstd-0.1.4.0",
+    "file": "zstd.cabal",
+    "sha256": "b93f03afbebae248276a9056720f1efcad34538bcf6dc30f7621d538edcb84d4",
+    "flags": {},
+    "archive": true
+  }
+]
