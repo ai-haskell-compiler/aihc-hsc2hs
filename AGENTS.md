@@ -24,3 +24,5 @@ object-file inspection as the source of target information.
   extend explicit template support without executing compiled code.
 - Source distributions retained by Nix carry their own licenses. Do not copy
   upstream source into this repository without preserving its license.
+- Use Conventional Commits for commit messages and pull request titles.
+- Write new and updated prose in ASD-STE100 Simplified Technical English.
