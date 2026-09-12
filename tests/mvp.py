@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 import compare
 
 NAMES = ['const', 'size', 'alignment', 'offset', 'peek', 'poke', 'ptr',
-         'type', 'conditional', 'define', 'syntax']
+         'type', 'conditional', 'define', 'syntax', 'crlf', 'utf8', 'mixed-bytes']
 
 
 def main():
@@ -35,13 +35,13 @@ def main():
                               candidate_flags=['--target=' + triple, '--sysroot=' + args.sysroot] + (['--cross-compile'] if mode == 'cross' else []),
                               reference_flags=['--via-asm'] if via_asm else [],
                               preflight=[args.clang, *flags, '-c', 'preflight.c', '-o', 'preflight.o']))
-    summary = compare.run_suite(dict(candidate=[args.candidate], reference=[args.reference], cases=cases), args.output)
+    summary = compare.run_suite(dict(candidate=[args.candidate], reference=[args.reference], cases=cases, env={'LC_ALL': 'C.UTF-8'}), args.output)
     # Deliberate exact zero baseline. Never derive expected counts from results.
-    zero = dict(cases=11, candidate_failures=0, divergences=0, reference_native_failures=0,
+    zero = dict(cases=14, candidate_failures=0, divergences=0, reference_native_failures=0,
                 reference_cross_failures=0, reference_cross_unsupported=0,
                 reference_cross_other_failures=0, setup_failures=0, tool_errors=0)
-    expected = dict(counts={**zero, 'cases': 55 if args.cross_target else 33},
-                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 22 if mode == 'cross' else 11}
+    expected = dict(counts={**zero, 'cases': 70 if args.cross_target else 42},
+                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 28 if mode == 'cross' else 14}
                                     for triple, mode, _, _ in cells},
                     case_ids=[name + '/' + mode + suffix for _, mode, suffix, _ in cells for name in NAMES],
                     inapplicable=[])
@@ -72,6 +72,16 @@ def main():
             file.write_text(source)
             result = subprocess.run(command + [str(file)], capture_output=True, text=True, timeout=30)
             assert result.returncode != 0 and diagnostic in result.stderr, result
+        # Candidate byte IO must not depend on the user's text locale.
+        import os
+        for mode in [[], ['--cross-compile']]:
+            outputs = []
+            for locale in ['C', 'C.UTF-8']:
+                subprocess.run(command + mode + [str(context / 'mixed-bytes.hsc')],
+                               check=True, capture_output=True, timeout=30,
+                               env={**os.environ, 'LC_ALL': locale})
+                outputs.append((root / 'Result.hs').read_bytes())
+            assert outputs[0] == outputs[1]
         file.write_text('#if 0\n#{unknown runtime()}\n#endif\nx = #{const 1}\n')
         subprocess.run(command + [str(file)], check=True, capture_output=True, timeout=30)
         guard = root / 'compile-only-guard'

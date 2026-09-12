@@ -45,9 +45,11 @@ let
       filepath
       process
       temporary
+      text
     ];
     executableHaskellDepends = with pkgs.haskellPackages; [
       base
+      bytestring
       directory
       filepath
     ];

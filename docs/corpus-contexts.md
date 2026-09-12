@@ -11,15 +11,15 @@ compilation is not yet a measured corpus target.
 
 | Host and mode | Exact matches | Candidate failures | Divergences | Inapplicable | Total |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| ARM64 Linux, native | 391 | 123 | 102 | 107 | 723 |
-| ARM64 macOS, native | 375 | 107 | 102 | 139 | 723 |
-| ARM64 macOS → x86-64 macOS, cross | 355 | 109 | 120 | 139 | 723 |
+| ARM64 Linux, native | 493 | 123 | 0 | 107 | 723 |
+| ARM64 macOS, native | 477 | 107 | 0 | 139 | 723 |
+| ARM64 macOS → x86-64 macOS, cross | 475 | 109 | 0 | 139 | 723 |
 
-All three measurements have zero setup failures, tool errors and native-oracle
-failures. The 102 native divergences are exclusively CRLF versus LF differences.
-The cross divergences comprise 99 line-ending differences, 18 encoding
-differences and three with both: upstream's cross output re-encodes UTF-8 source
-bytes as Latin-1. These remain divergences under the byte-exact contract.
+All three measurements have zero divergences, setup failures, tool errors and
+native-oracle failures. Matching upstream's carriage-return stripping and byte
+encoding resolved 102 former divergences on each native target and 120 on the
+cross target. The comparisons remain byte-exact; candidate output now matches
+upstream without normalization in the harness.
 
 Upstream cross mode fails on 77 files: 70 explicitly unsupported directives and
 seven other compilation failures. The latter are two GD files with undeclared

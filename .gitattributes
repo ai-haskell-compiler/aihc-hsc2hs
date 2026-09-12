@@ -1,0 +1,4 @@
+# Preserve byte-level oracle fixtures on every checkout.
+tests/mvp/crlf.hsc -text whitespace=cr-at-eol
+tests/mvp/mixed-bytes.hsc -text whitespace=cr-at-eol
+tests/mvp/utf8.hsc text eol=lf
