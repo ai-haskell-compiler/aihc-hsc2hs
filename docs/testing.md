@@ -2,14 +2,15 @@
 
 `nix flake check` runs corpus integrity checks, harness unit tests, upstream mode
 smoke tests, the Haskell library unit tests, and the MVP candidate comparisons.
-It does **not** claim full Stackage candidate coverage. Real package contexts
-and the remaining directives are still development work.
+On the measured ARM64 hosts it also runs the full-inventory corpus assertions
+described in [corpus contexts](corpus-contexts.md). Passing these assertions means
+coverage matches the reviewed baseline; it does not mean every file passes.
 
 `nix build .#mvp-tests` retains per-case commands, diagnostics, artifacts and
 diffs. `tests/mvp.py` declares eleven feature fixtures with exact zero failure
-and divergence counts in both native and cross modes (22 comparisons). Darwin
-adds eleven real x86-64 cross-target comparisons using the Nix Apple SDK (33
-comparisons). All invocations share compiler, sysroot and language flags; the
+and divergence counts in native mode and both upstream cross backends
+(classic and `--via-asm`): 33 comparisons. Darwin adds both backends for the
+real x86-64 cross target using the Nix Apple SDK, for 55 comparisons total. All invocations share compiler, sysroot and language flags; the
 candidate also receives explicit target arguments and the matching output mode.
 Every case first compiles the real fixture header as a target preflight.
 
@@ -97,7 +98,8 @@ if someone writes their counts into the expected JSON. Native reference failure
 is likewise a hard error.
 
 The result contains exact aggregate and per-target/mode counters, ordered case
-IDs and explicit inapplicable entries. Expected files use exactly the same
+IDs and explicit inapplicable entries. Corpus reports additionally assert each
+file’s failure categories and the exact list of verified matches. Expected files use exactly the same
 schema as `summary.json`; missing/extra counters or changed case lists fail.
 Only compare bytes when both tools succeed; a candidate failure is not also
 counted as a divergence. Cross failures are partitioned into explicit unsupported

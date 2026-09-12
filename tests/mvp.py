@@ -21,25 +21,29 @@ def main():
     args = p.parse_args()
     context = Path(__file__).parent / 'mvp'
     cases = []
-    cells = [(args.target, 'native', ''), (args.target, 'cross', '')]
+    cells = [(args.target, 'native', '', False), (args.target, 'cross', '', False),
+             (args.target, 'cross', '/asm', True)]
     if args.cross_target:
-        cells.append((args.cross_target, 'cross', '/' + args.cross_target))
-    for triple, mode, suffix in cells:
+        cells += [(args.cross_target, 'cross', '/' + args.cross_target, False),
+                  (args.cross_target, 'cross', '/' + args.cross_target + '/asm', True)]
+    for triple, mode, suffix, via_asm in cells:
         flags = ['--target=' + triple, '--sysroot=' + args.sysroot, '-std=gnu11']
         for name in NAMES:
             cases.append(dict(id=name + '/' + mode + suffix, target=triple, mode=mode,
                               source=name + '.hsc', context=str(context),
                               flags=['--cc=' + args.clang] + ['--cflag=' + f for f in flags],
                               candidate_flags=['--target=' + triple, '--sysroot=' + args.sysroot] + (['--cross-compile'] if mode == 'cross' else []),
+                              reference_flags=['--via-asm'] if via_asm else [],
                               preflight=[args.clang, *flags, '-c', 'preflight.c', '-o', 'preflight.o']))
     summary = compare.run_suite(dict(candidate=[args.candidate], reference=[args.reference], cases=cases), args.output)
     # Deliberate exact zero baseline. Never derive expected counts from results.
     zero = dict(cases=11, candidate_failures=0, divergences=0, reference_native_failures=0,
                 reference_cross_failures=0, reference_cross_unsupported=0,
                 reference_cross_other_failures=0, setup_failures=0, tool_errors=0)
-    expected = dict(counts={**zero, 'cases': 33 if args.cross_target else 22},
-                    by_target_mode={triple + '/' + mode: zero for triple, mode, _ in cells},
-                    case_ids=[name + '/' + mode + suffix for _, mode, suffix in cells for name in NAMES],
+    expected = dict(counts={**zero, 'cases': 55 if args.cross_target else 33},
+                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 22 if mode == 'cross' else 11}
+                                    for triple, mode, _, _ in cells},
+                    case_ids=[name + '/' + mode + suffix for _, mode, suffix, _ in cells for name in NAMES],
                     inapplicable=[])
     try:
         compare.assert_expected(summary, expected)

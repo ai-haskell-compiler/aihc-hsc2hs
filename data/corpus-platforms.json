@@ -1,0 +1,12 @@
+{
+  "hinotify-0.4.2": {
+    "osx": "Linux-only API: the pinned Cabal description identifies the Linux kernel inotify interface; System/INotify.hsc requires sys/inotify.h. Tested in the Linux matrix cell."
+  },
+  "pthread-0.2.1": {
+    "osx": "Pinned source System/Posix/Thread.hsc uses #type pthread_t, requiring an arithmetic pthread_t. Darwin defines a pointer pthread_t and upstream's native template cannot compile it. This package/ABI combination is inapplicable, not a candidate success; tested on Linux's integer pthread_t."
+  },
+  "windns-0.1.0.1": {
+    "osx": "Pinned Cabal revision requires base <0 outside Windows unless allow-non-windows is enabled; that flag is disabled in this snapshot. Requires Windows dnsapi and windns.h.",
+    "linux": "Pinned Cabal revision requires base <0 outside Windows unless allow-non-windows is enabled; that flag is disabled in this snapshot. Requires Windows dnsapi and windns.h."
+  }
+}

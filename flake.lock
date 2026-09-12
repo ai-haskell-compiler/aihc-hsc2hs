@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "darwinCrossNixpkgs": {
+      "locked": {
+        "lastModified": 1789090104,
+        "narHash": "sha256-aYuIOkjWlA2YvXzx9NVgwHtGZqA+J6G7Dt3wbuuGwlg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "b378e416ccd4a9d27aba331c8f51a7c985dea1a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-26.05-darwin",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1789073787,
@@ -18,6 +34,7 @@
     },
     "root": {
       "inputs": {
+        "darwinCrossNixpkgs": "darwinCrossNixpkgs",
         "nixpkgs": "nixpkgs"
       }
     }

@@ -117,14 +117,18 @@ separate copies of the same context and identical relative source/output names.
 The comparator does not erase Haskell whitespace or line pragmas. Stale output
 files cannot turn a failed invocation into a pass.
 
-No full-Stackage candidate baseline is claimed yet. Synthetic tool processes test
-counter accounting and three upstream fixtures check native/cross behavior.
-The MVP adds pure feature/decoder tests and eleven focused fixtures compared
-byte-for-byte against both upstream modes, with an exact zero-failure baseline.
-On Apple Silicon, an additional x86-64 cross-mode job uses the same Nix Apple SDK.
-Full package comparisons need Cabal's actual
-configuration, generated headers, native libraries and platform selection; the
-corpus itself is not that build environment.
+The complete inventory now has per-file native and cross comparisons. See
+[corpus contexts and measurement](docs/corpus-contexts.md) for the measured
+matrix, target exclusions, build-context construction and reproducible commands.
+Baselines under `data/baselines/` assert exact counters and individual file
+outcomes. Setup failures, native-oracle failures and tool errors must be zero.
+
+Native ARM64 Linux currently has **391 exact matches**, 123 candidate failures,
+102 byte divergences and 107 inapplicable files. Native ARM64 macOS has **375
+exact matches**, 107 candidate failures, 102 byte divergences and 139 inapplicable
+files. Each row accounts for all 723. All 102 native divergences on each platform
+are CRLF-versus-LF line endings; the strict comparison deliberately retains them.
+These are preprocessing results, not complete Haskell package build results.
 
 ## Development sequence
 
@@ -133,10 +137,9 @@ corpus itself is not that build environment.
    Keep answer records independent of target pointers and relocations.
 3. Add enums, strings, companion files and corpus template families, with focused
    tests for every feature. Report unsupported cases explicitly.
-4. Prepare Nix package contexts from the pinned snapshot, with genuine generated
-   headers and target dependencies. Establish a zero-failure native oracle.
-5. Wire candidate and reference into `lib.mkComparison`; check in measured
-   per-target baselines and reduce candidate failure/divergence counts to zero.
+4. Maintain pinned package contexts, genuine generated headers and target C
+   dependencies, keeping native-oracle and setup failures at zero.
+5. Reduce the measured per-target candidate failure/divergence baselines to zero.
 6. Expand the target/sysroot matrix without executing candidate-generated code.
 
 Do not convert the earlier static audit's 108 flagged files into an expected
