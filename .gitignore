@@ -1,0 +1,6 @@
+/result*
+/.direnv/
+/dist-newstyle/
+/__pycache__/
+**/__pycache__/
+*.pyc
