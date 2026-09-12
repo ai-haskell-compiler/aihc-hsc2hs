@@ -10,6 +10,7 @@ assert :: String -> Bool -> IO ()
 assert label ok = unless ok (error label)
 main :: IO ()
 main = do
+  assert "CR removal precedes parsing" (parse "a\rb\r\nc = #{const 1\\\r\n + 2}\r\n" == parse "ab\nc = #{const 1\\\n + 2}\n")
   objectTests
   featureTests
   assert "escaped hash" (parse "x = ##x" == Right [Text 1 "x = #x"])

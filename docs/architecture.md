@@ -32,6 +32,8 @@ prepareWithStyle :: OutputStyle -> FilePath -> String
 decodeAnswers :: ByteString -> Either String (Map Int Answer)
 finish :: Plan -> Map Int Answer -> Either Diagnostic String
 generate :: Config -> FilePath -> String -> IO (Either Diagnostic String)
+generateBytes :: Config -> FilePath -> ByteString
+              -> IO (Either Diagnostic ByteString)
 ```
 
 `Config` contains a `Target`, Clang executable, compiler flags, timeout, and
@@ -39,6 +41,19 @@ upstream output style. `NativeStyle` hoists C preprocessor setup like the native
 oracle; `CrossStyle` keeps its sequential setup and different output pragmas.
 Neither style executes compiled code. `Plan` is opaque; parsed tokens and
 decoded answers are exposed for library use. These interfaces are experimental.
+
+The executable uses `generateBytes` and binary file IO. The parser removes every
+carriage return before tokenization, including isolated CR bytes and CRLF in C
+continuations, matching upstream. Other source bytes are passed through the
+probe without locale decoding. Native output preserves those bytes; cross output
+encodes each byte-valued character as UTF-8, matching the pinned upstream cross
+oracle under the corpus's `C.UTF-8` locale. This intentionally reproduces
+upstream's re-encoding of non-ASCII source text. It does not claim equivalence to
+upstream under every possible output locale. Candidate byte IO is locale-independent.
+
+The existing `String` API continues to accept decoded characters and return
+characters; its C probes use explicit UTF-8. Use the byte API for file-compatible
+preprocessing, including source that is not valid UTF-8.
 
 Generation settings explicitly contain source names, target settings, includes,
 definitions and template semantics. Discovery of tool binaries, sysroots and

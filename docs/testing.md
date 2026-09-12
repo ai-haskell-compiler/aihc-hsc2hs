@@ -9,8 +9,8 @@ coverage matches the reviewed baseline; it does not mean every file passes.
 `nix build .#mvp-tests` retains per-case commands, diagnostics, artifacts and
 diffs. `tests/mvp.py` declares eleven feature fixtures with exact zero failure
 and divergence counts in native mode and both upstream cross backends
-(classic and `--via-asm`): 33 comparisons. Darwin adds both backends for the
-real x86-64 cross target using the Nix Apple SDK, for 55 comparisons total. All invocations share compiler, sysroot and language flags; the
+(classic and `--via-asm`): 42 comparisons. Darwin adds both backends for the
+real x86-64 cross target using the Nix Apple SDK, for 70 comparisons total. All invocations share compiler, sysroot and language flags; the
 candidate also receives explicit target arguments and the matching output mode.
 Every case first compiles the real fixture header as a target preflight.
 

@@ -2,6 +2,7 @@
 module Main (main) where
 
 import Hsc2hs
+import qualified Data.ByteString as B
 import System.Environment (getArgs)
 import System.Exit (die)
 import System.FilePath (replaceExtension)
@@ -36,9 +37,9 @@ main = do
             { compiler = maybe "clang" id (get "cc")
             , outputStyle = if get "cross" == Nothing then NativeStyle else CrossStyle
             , cFlags = concatMap (\(k,v) -> case k of "flag" -> [v]; "include" -> ["-include",v]; _ -> []) opts }
-      source <- readFile file
-      result <- generate config file source
+      source <- B.readFile file
+      result <- generateBytes config file source
       case result of
         Left (Diagnostic message) -> die message
-        Right output -> writeFile (maybe (replaceExtension file "hs") id (get "output")) output
+        Right output -> B.writeFile (maybe (replaceExtension file "hs") id (get "output")) output
     _ -> die "expected one input file and explicit --target TRIPLE --sysroot DIR; use --help"

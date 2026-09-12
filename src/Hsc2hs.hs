@@ -1,10 +1,13 @@
 -- SPDX-License-Identifier: Unlicense
 module Hsc2hs
   ( Diagnostic(..), Target(..), Config(..), OutputStyle(..), defaultConfig
-  , Token(..), parse, Plan, prepare, prepareWithStyle, finish, generate
+  , Token(..), parse, Plan, prepare, prepareWithStyle, finish, generate, generateBytes
   ) where
 
 import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as B8
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import qualified Data.Map.Strict as M
 import Data.Char (isAlphaNum, isSpace)
 import Data.List (intercalate, isPrefixOf)
@@ -43,10 +46,11 @@ type Result a = Either Diagnostic a
 err :: String -> Result a
 err = Left . Diagnostic
 
--- Haskell text is retained verbatim. C arguments use balanced delimiters and
+-- Remove carriage returns as upstream does before parsing. Other Haskell text
+-- is retained verbatim. C arguments use balanced delimiters and
 -- quotes; only a top-level newline or closing delimiter terminates bare syntax.
 parse :: String -> Result [Token]
-parse = go 1 1 ""
+parse = go 1 1 "" . filter (/= '\r')
   where
     flush start acc rest = [Text start (reverse acc) | not (null acc)] ++ rest
     go _ start acc [] = pure (flush start acc [])
@@ -241,7 +245,22 @@ finish (Plan style file pieces) answers = do
 -- This is the only process boundary. There is intentionally no linking or
 -- execution operation. All compiler arguments are passed without a shell.
 generate :: Config -> FilePath -> String -> IO (Result String)
-generate config file source
+generate = generateWith (\path -> B.writeFile path . T.encodeUtf8 . T.pack)
+
+-- | Preprocess raw source bytes, matching upstream under a UTF-8 output locale.
+-- Native output preserves source bytes; cross output encodes byte-valued
+-- characters as UTF-8, matching upstream's text output handle.
+-- Neither input decoding nor output encoding depends on the process locale.
+generateBytes :: Config -> FilePath -> B.ByteString -> IO (Result B.ByteString)
+generateBytes config file source =
+  fmap (fmap encode) (generateWith (\path -> B.writeFile path . B8.pack) config file (B8.unpack source))
+  where
+    encode = case outputStyle config of
+      NativeStyle -> B8.pack
+      CrossStyle -> T.encodeUtf8 . T.pack
+
+generateWith :: (FilePath -> String -> IO ()) -> Config -> FilePath -> String -> IO (Result String)
+generateWith writeProbe config file source
   | null (targetTriple (target config)) || null (targetSysroot (target config)) = pure (err "explicit target triple and sysroot are required")
   | compilerTimeoutMicros config <= 0 = pure (err "compiler timeout must be positive")
   | otherwise = case prepareWithStyle (outputStyle config) file source of
@@ -251,7 +270,7 @@ generate config file source
       let c = dir </> "probe.c"; o = dir </> "probe.o"; t = target config
       exists <- doesDirectoryExist (targetSysroot t)
       if not exists then pure (err ("missing sysroot: " ++ targetSysroot t)) else do
-        writeFile c probe
+        writeProbe c probe
         compiled <- timeout (compilerTimeoutMicros config) $ readProcessWithExitCode (compiler config)
           (["--target=" ++ targetTriple t, "--sysroot=" ++ targetSysroot t] ++ targetFlags t ++ cFlags config ++
            ["-iquote",takeDirectory file,"-fno-lto","-c",c,"-o",o]) ""

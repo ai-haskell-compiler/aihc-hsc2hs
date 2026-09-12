@@ -123,12 +123,9 @@ matrix, target exclusions, build-context construction and reproducible commands.
 Baselines under `data/baselines/` assert exact counters and individual file
 outcomes. Setup failures, native-oracle failures and tool errors must be zero.
 
-Native ARM64 Linux currently has **391 exact matches**, 123 candidate failures,
-102 byte divergences and 107 inapplicable files. Native ARM64 macOS has **375
-exact matches**, 107 candidate failures, 102 byte divergences and 139 inapplicable
-files. Each row accounts for all 723. All 102 native divergences on each platform
-are CRLF-versus-LF line endings; the strict comparison deliberately retains them.
-These are preprocessing results, not complete Haskell package build results.
+The coverage table in the measurement document accounts for all 723 files on
+each measured target. Comparisons remain byte-exact, including line endings and
+encoding. These are preprocessing results, not complete Haskell package builds.
 
 ## Development sequence
 
