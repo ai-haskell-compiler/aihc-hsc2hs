@@ -1,8 +1,27 @@
 # Nix comparison contract
 
-`nix flake check` currently runs the corpus integrity check, harness unit tests,
-and upstream mode smoke tests. It does **not** claim full candidate coverage.
-The compiler executable and real package contexts are the next development work.
+`nix flake check` runs corpus integrity checks, harness unit tests, upstream mode
+smoke tests, the Haskell library unit tests, and the MVP candidate comparisons.
+It does **not** claim full Stackage candidate coverage. Real package contexts
+and the remaining directives are still development work.
+
+`nix build .#mvp-tests` retains per-case commands, diagnostics, artifacts and
+diffs. `tests/mvp.py` declares eleven feature fixtures with exact zero failure
+and divergence counts in both native and cross modes (22 comparisons). Darwin
+adds eleven real x86-64 cross-target comparisons using the Nix Apple SDK (33
+comparisons). All invocations share compiler, sysroot and language flags; the
+candidate also receives explicit target arguments and the matching output mode.
+Every case first compiles the real fixture header as a target preflight.
+
+The unit suite covers each numeric/layout rendering rule, source parsing,
+answer completeness and malformed objects. Independently constructed COFF and
+little/big-endian ELF objects test decoding without relying on host byte order.
+Native integration exercises the host format; the Darwin cross job additionally
+exercises x86-64 Mach-O. These tests do not establish a Windows package/sysroot
+matrix or full ELF ABI coverage.
+
+When testing an uncommitted checkout with new files, use `nix flake check path:.`
+and `nix build path:.#stackage-hsc` so Nix includes untracked source files.
 
 ## Configuring a suite
 
@@ -32,7 +51,10 @@ native mode: it always inspects target objects. `candidate_flags` and
 `reference_flags` allow deliberate tool-specific CLI adapters. `env` is an
 optional map at suite or case scope.
 
-The eventual candidate CLI should accept the common hsc2hs options used here,
+The MVP CLI accepts output, include, define, compiler and compiler-flag options.
+It additionally requires `--target` and `--sysroot` in `candidate_flags`;
+cross cases must pass `--cross-compile` there to match upstream output pragmas.
+The eventual candidate CLI should accept the other common hsc2hs options used here,
 including explicit Clang `--cc` and repeated `--cflag` / `--lflag` as appropriate.
 Link flags may be relevant to reference execution, but the candidate never links
 and runs probes. Keep codegen-affecting options identical.

@@ -1,13 +1,39 @@
 # aihc-hsc2hs
 
-A planned Haskell replacement for `hsc2hs`, tied to Clang, that obtains target
+A Haskell MVP replacement for `hsc2hs`, tied to Clang, that obtains target
 information by inspecting object files. **The candidate must never execute
 compiled input code**, whether natively, through an emulator, a WASI runtime,
 or a JIT.
 
-This repository starts with the reproducible corpus and differential-testing
-infrastructure. **The replacement compiler is not implemented yet.** Passing
-bootstrap checks verifies the harness and corpus, not candidate compatibility.
+The Unlicense Cabal package exposes the `Hsc2hs` and `Hsc2hs.Object` libraries
+and the `aihc-hsc2hs` executable. The MVP implements `const`, `size`, `alignment`,
+`offset`, `type`, `peek`, `poke`, `ptr`, C preprocessor directives, and ordinary
+and braced directive syntax. It reads ELF, Mach-O and COFF objects directly.
+`const` currently accepts integer expressions of at most 64 bits; floating-point
+and wider constant expressions receive an unsupported-value diagnostic.
+**Full Stackage compatibility is not yet implemented or claimed.**
+
+Unsupported active directives (`enum`, `const_str`, `let`, `def`, and custom
+templates) fail explicitly. WebAssembly objects, companion C/header generation,
+column pragmas and the complete upstream CLI are not implemented. The CLI
+requires an explicit target triple and sysroot; include paths and package C
+dependencies must also be supplied. Standard template macro overrides are
+diagnosed rather than silently interpreted as built-in directives.
+
+```sh
+nix build .#aihc-hsc2hs
+nix run .#aihc-hsc2hs -- --help
+# Supply real Nix toolchain paths for your target:
+result/bin/aihc-hsc2hs --target TRIPLE --sysroot SYSROOT --cc CLANG Input.hsc
+nix build .#mvp-tests
+```
+
+The default Nix package is now the candidate. Both normal and `--cross-compile`
+invocations only compile objects. The flag selects upstream cross-mode macro
+handling and output pragmas, which differ from the native reference backend.
+The IO driver imposes a configurable timeout (60 seconds by default), retains
+compiler errors, and forwards warnings. Library callers can instead use pure
+`prepare`, `decodeAnswers`, and `finish` with their own compiler service.
 
 ## Intended contract
 
@@ -91,20 +117,22 @@ separate copies of the same context and identical relative source/output names.
 The comparator does not erase Haskell whitespace or line pragmas. Stale output
 files cannot turn a failed invocation into a pass.
 
-No full-Stackage candidate baseline is claimed yet. The bootstrap uses synthetic
-tool processes to test counter accounting and three real upstream fixtures to
-check native/cross behavior. Full package comparisons need Cabal's actual
+No full-Stackage candidate baseline is claimed yet. Synthetic tool processes test
+counter accounting and three upstream fixtures check native/cross behavior.
+The MVP adds pure feature/decoder tests and eleven focused fixtures compared
+byte-for-byte against both upstream modes, with an exact zero-failure baseline.
+On Apple Silicon, an additional x86-64 cross-mode job uses the same Nix Apple SDK.
+Full package comparisons need Cabal's actual
 configuration, generated headers, native libraries and platform selection; the
 corpus itself is not that build environment.
 
 ## Development sequence
 
-1. Implement the pure Haskell parser/probe/reconstruction interfaces and a
-   compile-only Clang driver.
-2. Define a versioned answer-record format and implement ELF, Mach-O, COFF and
-   WebAssembly object readers. Avoid pointer relocations in answer records.
-3. Implement numeric/layout directives, conditionals, strings and corpus template
-   families. Report unsupported cases explicitly.
+1. Extend and harden the MVP parser, probe/reconstruction APIs and Clang driver.
+2. Expand real ABI tests for ELF and COFF, and add a WebAssembly object reader.
+   Keep answer records independent of target pointers and relocations.
+3. Add enums, strings, companion files and corpus template families, with focused
+   tests for every feature. Report unsupported cases explicitly.
 4. Prepare Nix package contexts from the pinned snapshot, with genuine generated
    headers and target dependencies. Establish a zero-failure native oracle.
 5. Wire candidate and reference into `lib.mkComparison`; check in measured

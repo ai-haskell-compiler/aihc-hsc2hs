@@ -1,7 +1,48 @@
 { pkgs }:
 let
   lib = pkgs.lib;
-  source = lib.cleanSource ../.;
+  source = lib.cleanSourceWith {
+    src = ../.;
+    filter =
+      path: type:
+      lib.cleanSourceFilter path type
+      && !(builtins.elem (baseNameOf path) [
+        "dist-newstyle"
+        ".direnv"
+        "__pycache__"
+      ]);
+  };
+  candidate = pkgs.haskellPackages.mkDerivation {
+    pname = "aihc-hsc2hs";
+    version = "0.1.0.0";
+    src = source;
+    isLibrary = true;
+    isExecutable = true;
+    libraryHaskellDepends = with pkgs.haskellPackages; [
+      base
+      bytestring
+      containers
+      directory
+      filepath
+      process
+      temporary
+    ];
+    executableHaskellDepends = with pkgs.haskellPackages; [
+      base
+      directory
+      filepath
+    ];
+    testHaskellDepends = with pkgs.haskellPackages; [
+      base
+      bytestring
+      containers
+      directory
+      filepath
+      process
+      temporary
+    ];
+    license = lib.licenses.unlicense;
+  };
   manifest = builtins.fromJSON (builtins.readFile ../data/stackage.json);
   archives = builtins.listToAttrs (
     map (package: {
@@ -26,6 +67,31 @@ let
     runtimeInputs = [ pkgs.python3 ];
     text = ''exec python ${../tools/compare.py} "$@"'';
   };
+  mvpTests =
+    pkgs.runCommand "aihc-hsc2hs-mvp-tests"
+      {
+        nativeBuildInputs = [
+          pkgs.python3
+          pkgs.llvmPackages.clang
+          pkgs.haskellPackages.hsc2hs
+        ];
+      }
+      ''
+        export PYTHONDONTWRITEBYTECODE=1
+        python ${source}/tests/mvp.py \
+          --candidate ${candidate}/bin/aihc-hsc2hs \
+          --reference ${pkgs.haskellPackages.hsc2hs}/bin/hsc2hs \
+          --clang ${pkgs.llvmPackages.clang}/bin/clang \
+          --target ${pkgs.stdenv.hostPlatform.config} \
+          ${lib.optionalString pkgs.stdenv.isDarwin "--cross-target x86_64-apple-darwin"} \
+          --sysroot ${
+            if pkgs.stdenv.isDarwin then
+              "${pkgs.apple-sdk}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+            else
+              lib.getDev pkgs.stdenv.cc.libc
+          } \
+          --output "$out"
+      '';
   # Context paths, sysroots and tool commands in config retain their Nix closure
   # through builtins.toJSON. No network or package configuration is done here.
   mkComparison =
@@ -71,6 +137,8 @@ let
 in
 {
   inherit
+    candidate
+    mvpTests
     corpus
     comparisonRunner
     mkComparison

@@ -19,7 +19,9 @@
           project = projectFor system;
         in
         {
-          default = project.corpus;
+          default = project.candidate;
+          aihc-hsc2hs = project.candidate;
+          mvp-tests = project.mvpTests;
           stackage-hsc = project.corpus;
           comparison-runner = project.comparisonRunner;
           reference-modes = project.referenceModes;
@@ -32,6 +34,8 @@
         in
         {
           harness = project.harnessTests;
+          candidate = project.candidate;
+          mvp = project.mvpTests;
           reference-modes = project.referenceModes;
           stackage-hsc = project.corpus;
         }
@@ -48,7 +52,7 @@
             packages = [
               pkgs.llvmPackages.clang
               pkgs.llvmPackages.llvm
-              pkgs.haskellPackages.ghc
+              (pkgs.haskellPackages.ghcWithPackages (p: [ p.temporary ]))
               pkgs.haskellPackages.hsc2hs
               pkgs.cabal-install
               pkgs.python3
