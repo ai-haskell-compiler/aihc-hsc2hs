@@ -64,7 +64,7 @@ Snapshot: Stackage **lts-24.58** (ghc-9.10.3), **723 `.hsc` files** in 166 packa
 | Host and mode | Byte-exact matches | Match rate | Candidate failures | Divergences | Upstream cross failures | Inapplicable |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | ARM64 Linux, native | 530 / 616 | **86.0%** | 86 | 0 | 0 | 107 |
-| ARM64 macOS, native | 504 / 584 | **86.3%** | 80 | 0 | 0 | 139 |
+| ARM64 macOS, native | 510 / 584 | **87.3%** | 74 | 0 | 0 | 139 |
 | ARM64 macOS → x86-64 macOS, cross | 502 / 584 | **86.0%** | 82 | 0 | 77 | 139 |
 <!-- stackage-coverage:end -->
 
