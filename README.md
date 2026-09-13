@@ -7,13 +7,17 @@ or a JIT.
 
 The Unlicense Cabal package exposes the `Hsc2hs` and `Hsc2hs.Object` libraries
 and the `aihc-hsc2hs` executable. The MVP implements `const`, `size`, `alignment`,
-`offset`, `type`, `peek`, `poke`, `ptr`, C preprocessor directives, and ordinary
-and braced directive syntax. It reads ELF, Mach-O and COFF objects directly.
+`offset`, `type`, `peek`, `poke`, `ptr`, `enum`, C preprocessor directives, and
+ordinary and braced directive syntax. It reads ELF, Mach-O and COFF objects directly.
 `const` currently accepts integer expressions of at most 64 bits; floating-point
 and wider constant expressions receive an unsupported-value diagnostic.
 **Full Stackage compatibility is not yet implemented or claimed.**
 
-Unsupported active directives (`enum`, `const_str`, `let`, `def`, and custom
+`enum` derives each Haskell name exactly as upstream does, including
+`hsc_haskellize` name mangling and the whitespace handling of the C
+preprocessor's stringification.
+
+Unsupported active directives (`const_str`, `let`, `def`, and custom
 templates) fail explicitly. WebAssembly objects, companion C/header generation,
 column pragmas and the complete upstream CLI are not implemented. The CLI
 requires an explicit target triple and sysroot; include paths and package C
@@ -132,7 +136,7 @@ encoding. These are preprocessing results, not complete Haskell package builds.
 1. Extend and harden the MVP parser, probe/reconstruction APIs and Clang driver.
 2. Expand real ABI tests for ELF and COFF, and add a WebAssembly object reader.
    Keep answer records independent of target pointers and relocations.
-3. Add enums, strings, companion files and corpus template families, with focused
+3. Add strings, companion files and corpus template families, with focused
    tests for every feature. Report unsupported cases explicitly.
 4. Maintain pinned package contexts, genuine generated headers and target C
    dependencies, keeping native-oracle and setup failures at zero.

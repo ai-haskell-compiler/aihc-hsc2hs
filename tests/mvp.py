@@ -10,7 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 import compare
 
 NAMES = ['const', 'size', 'alignment', 'offset', 'peek', 'poke', 'ptr',
-         'type', 'conditional', 'define', 'syntax', 'crlf', 'utf8', 'mixed-bytes']
+         'type', 'enum', 'conditional', 'define', 'syntax', 'crlf', 'utf8',
+         'mixed-bytes']
 
 
 def main():
@@ -37,11 +38,11 @@ def main():
                               preflight=[args.clang, *flags, '-c', 'preflight.c', '-o', 'preflight.o']))
     summary = compare.run_suite(dict(candidate=[args.candidate], reference=[args.reference], cases=cases, env={'LC_ALL': 'C.UTF-8'}), args.output)
     # Deliberate exact zero baseline. Never derive expected counts from results.
-    zero = dict(cases=14, candidate_failures=0, divergences=0, reference_native_failures=0,
+    zero = dict(cases=15, candidate_failures=0, divergences=0, reference_native_failures=0,
                 reference_cross_failures=0, reference_cross_unsupported=0,
                 reference_cross_other_failures=0, setup_failures=0, tool_errors=0)
-    expected = dict(counts={**zero, 'cases': 70 if args.cross_target else 42},
-                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 28 if mode == 'cross' else 14}
+    expected = dict(counts={**zero, 'cases': 75 if args.cross_target else 45},
+                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 30 if mode == 'cross' else 15}
                                     for triple, mode, _, _ in cells},
                     case_ids=[name + '/' + mode + suffix for _, mode, suffix, _ in cells for name in NAMES],
                     inapplicable=[])

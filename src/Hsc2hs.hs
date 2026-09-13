@@ -9,8 +9,9 @@ import qualified Data.ByteString.Char8 as B8
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Map.Strict as M
-import Data.Char (isAlphaNum, isSpace)
+import Data.Char (isAlphaNum, isSpace, toLower, toUpper)
 import Data.List (intercalate, isPrefixOf)
+import Data.Maybe (fromMaybe)
 import Control.Exception (IOException, try)
 import Control.Monad (unless)
 import System.Exit (ExitCode(..))
@@ -38,8 +39,15 @@ defaultConfig :: Target -> Config
 defaultConfig t = Config "clang" t [] 60000000 NativeStyle
 
 data Token = Text Int String | Directive Int String String deriving (Eq, Show)
-data Piece = Literal Int String | Expansion String | Control String String | Unsupported String
+data Piece = Literal Int String | Expansion String | Enumeration String String [(Int, String)]
+           | Control String String | Unsupported String
   deriving (Eq, Show)
+
+-- | Query IDs a piece owns beyond its own presence marker. Only @#enum@ needs
+-- more than one answer, one per enumerated constant.
+subQueries :: Piece -> [Int]
+subQueries (Enumeration _ _ entries) = map fst entries
+subQueries _ = []
 data Plan = Plan OutputStyle FilePath [(Int, Piece)] deriving (Eq, Show)
 
 type Result a = Either Diagnostic a
@@ -139,23 +147,70 @@ prepare = prepareWithStyle NativeStyle
 prepareWithStyle :: OutputStyle -> FilePath -> String -> Result (String, Plan)
 prepareWithStyle style file source = do
   tokens <- parse source
-  pairs <- mapM lower (zip [1..] tokens)
+  pairs <- allocate 1 tokens
   let headers = if style == CrossStyle then "" else concat
         [location line ++ "#" ++ key ++ " " ++ arg ++ "\n" | Directive line key arg <- tokens, key `elem` controls]
       prelude = "#include <stddef.h>\n#if defined(__APPLE__)\n#define AIHC_SECTION \"__DATA,__aihc_ans\"\n#else\n#define AIHC_SECTION \"aihc_ans\"\n#endif\n" ++ headers ++ record 0 0 "0"
   pure (prelude ++ concatMap fst pairs, Plan style file (map snd pairs))
   where
-    lower (ident, Text line s) = pure (record ident 0 "0", (ident,Literal line s))
-    lower (ident, Directive line key arg)
+    -- Directives may own more than one query ID, so IDs are threaded rather
+    -- than zipped against the token list.
+    allocate _ [] = pure []
+    allocate ident (tok:toks) = do
+      entry <- lower ident tok
+      more <- allocate (ident + 1 + length (subQueries (snd (snd entry)))) toks
+      pure (entry:more)
+    lower ident (Text line s) = pure (record ident 0 "0", (ident,Literal line s))
+    lower ident (Directive line key arg)
       | key `elem` controls =
           let directive = if style == NativeStyle && key `notElem` conditionals then "" else location line ++ "#" ++ key ++ " " ++ arg ++ "\n"
           in pure (directive ++ record ident 0 "0", (ident,Control key arg))
+      | key == "enum" =
+          -- One presence marker plus one constant query per enumerated name.
+          -- A malformed argument yields no output, exactly as upstream does.
+          let (ty,constructor,entries) = fromMaybe ("","",[]) (parseEnum arg)
+              numbered = zip [ident+1..] entries
+              guardTemplates = location line ++ "#if defined(hsc_enum) || defined(hsc_haskellize)\n#error AIHC_UNSUPPORTED_template_override\n#endif\n"
+              probe = guardTemplates ++ record ident 0 "0" ++
+                concat [record i 1 ("(" ++ cName ++ ")") | (i,(_,cName)) <- numbered]
+          in pure (probe, (ident, Enumeration ty constructor
+                            [(i, fromMaybe (haskellize cName) hsName) | (i,(hsName,cName)) <- numbered]))
       | otherwise = case query key arg of
           Just expr -> pure (location line ++ "#ifdef hsc_" ++ key ++ "\n#error AIHC_UNSUPPORTED_template_override\n#endif\n" ++ record ident 1 expr, (ident,Expansion key))
           Nothing -> pure (location line ++ "#error AIHC_UNSUPPORTED_directive_" ++ key ++ "\n", (ident,Unsupported key))
     location line = "#line " ++ show line ++ " " ++ show file ++ "\n"
     conditionals = ["if","ifdef","ifndef","elif","else","endif"]
     controls = ["include","define","undef","error","warning"] ++ conditionals
+
+-- | Split @#enum type, constructor, name = expr, ...@ exactly as upstream does,
+-- including its lack of trimming around an explicit Haskell name.
+parseEnum :: String -> Maybe (String, String, [(Maybe String, String)])
+parseEnum arg = case break (== ',') arg of
+  (_, []) -> Nothing
+  (ty, _:afterType) -> case break (== ',') afterType of
+    (constructor, afterConstructor) -> Just (ty, constructor, entries afterConstructor)
+  where
+    entries [] = []
+    entries (_:rest) = case break (== ',') rest of
+      (entry, more) -> split (dropWhile isSpace entry) : entries more
+    split entry = case break (== '=') entry of
+      (cName, []) -> (Nothing, cName)
+      (hsName, _:cName) -> (Just hsName, cName)
+
+-- Mirrors template-hsc.h's hsc_haskellize: lower case with underscores
+-- consumed and the following letter upper-cased.
+haskellize :: String -> String
+haskellize [] = []
+haskellize (c:cs) = toLower c : go False cs
+  where
+    go _ [] = []
+    go _ ('_':rest) = go True rest
+    go upper (x:rest) = (if upper then toUpper x else toLower x) : go False rest
+
+-- The C preprocessor collapses whitespace when stringifying the enum type and
+-- constructor. Reproduce that instead of emitting the raw argument text.
+stringify :: String -> String
+stringify = unwords . words
 
 query :: String -> String -> Maybe String
 query key arg = case key of
@@ -173,7 +228,7 @@ query key arg = case key of
 finish :: Plan -> M.Map Int Answer -> Result String
 finish (Plan style file pieces) answers = do
   unless (M.lookup 0 answers == Just (Answer 0 0)) (err "missing answer sentinel")
-  unless (all (`elem` (0:map fst pieces)) (M.keys answers)) (err "unexpected answer ID")
+  unless (all (`elem` (0 : concatMap (\(i,p) -> i : subQueries p) pieces)) (M.keys answers)) (err "unexpected answer ID")
   validate True [] pieces
   rendered <- render False pieces
   let defines = ["{-# OPTIONS_GHC -optc-D" ++ macro arg ++ " #-}\n" | style == NativeStyle, (i,Control "define" arg) <- pieces, M.member i answers]
@@ -206,6 +261,7 @@ finish (Plan style file pieces) answers = do
           _ -> err "unexpected endif"
         _ -> do
           require (present == active)
+          require (all (\i -> M.member i answers == active) (subQueries piece))
           validate active stack rest
     macro arg = let (k,v) = break isSpace arg in k ++ if null (trim v) then "" else "=" ++ trim v
     linePragma :: Int -> String
@@ -225,8 +281,19 @@ finish (Plan style file pieces) answers = do
             s <- expansion key value
             more <- render True rest
             pure (s ++ more)
+          Enumeration ty constructor entries -> do
+            ss <- mapM (enumLine ty constructor) entries
+            more <- render True rest
+            pure (concat ss ++ more)
           Control key _ -> render (pending || (style == NativeStyle && key `elem` ["if","ifdef","ifndef","elif","else","endif"])) rest
           Unsupported key -> err ("unsupported directive: " ++ key)
+    enumLine ty constructor (ident,hsName) = case M.lookup ident answers of
+      Nothing -> err "missing or inconsistent branch/answer record"
+      Just (Answer kind value) -> do
+        unless (kind == 1) (err "answer kind mismatch")
+        pure (hsName ++ " :: " ++ stringify ty ++ "\n" ++
+              hsName ++ " = " ++ stringify constructor ++ " " ++ literal value ++ "\n")
+    literal value = if value < 0 then "(" ++ show value ++ ")" else show value
     expansion key value = case key of
       "const" -> pure (show value)
       "alignment" -> pure (show value)
