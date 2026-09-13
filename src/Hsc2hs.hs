@@ -9,6 +9,7 @@ import qualified Data.ByteString.Char8 as B8
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Map.Strict as M
+import Data.Bits (shiftR, (.&.))
 import Data.Char (isAlphaNum, isSpace, toLower, toUpper)
 import Data.List (intercalate, isPrefixOf)
 import Data.Maybe (fromMaybe)
@@ -40,13 +41,14 @@ defaultConfig t = Config "clang" t [] 60000000 NativeStyle
 
 data Token = Text Int String | Directive Int String String deriving (Eq, Show)
 data Piece = Literal Int String | Expansion String | Enumeration String String [(Int, String)]
-           | Control String String | Unsupported String
+           | StringExpansion [Int] | Control String String | Unsupported String
   deriving (Eq, Show)
 
--- | Query IDs a piece owns beyond its own presence marker. Only @#enum@ needs
--- more than one answer, one per enumerated constant.
+-- | Query IDs a piece owns beyond its own presence marker: one per enumerated
+-- constant for @#enum@, and one per byte chunk for @#const_str@.
 subQueries :: Piece -> [Int]
 subQueries (Enumeration _ _ entries) = map fst entries
+subQueries (StringExpansion chunks) = chunks
 subQueries _ = []
 data Plan = Plan OutputStyle FilePath [(Int, Piece)] deriving (Eq, Show)
 
@@ -136,9 +138,44 @@ record :: Int -> Int -> String -> String
 record ident kind expr =
   "_Static_assert(__builtin_classify_type(" ++ expr ++ ") == 1, \"AIHC_UNSUPPORTED_noninteger_value\");\n" ++
   "_Static_assert(sizeof(" ++ expr ++ ") <= 8, \"AIHC_UNSUPPORTED_value_width\");\n" ++
+  answerArray ident ([show kind,"((" ++ expr ++ ") < 0)"] ++ replicate 6 "0" ++
+                     littleEndian ("(unsigned long long)(" ++ expr ++ ")") 8)
+
+-- | A 24-byte answer record: magic, version, query ID, then the caller's
+-- kind byte, flag byte, six reserved bytes and eight value bytes.
+answerArray :: Int -> [String] -> String
+answerArray ident fields =
   "__attribute__((used,aligned(1),section(AIHC_SECTION))) static const unsigned char aihc_answer_" ++ show ident ++ "[24] = {" ++
-  intercalate "," (["72","83","67","1"] ++ bytes (show ident) 4 ++ [show kind,"((" ++ expr ++ ") < 0)"] ++ replicate 6 "0" ++ bytes ("(unsigned long long)(" ++ expr ++ ")") 8) ++ "};\n"
-  where bytes e n = ["((" ++ e ++ " >> " ++ show (8*i) ++ ") & 255)" | i <- [0..n-1 :: Int]]
+  intercalate "," (["72","83","67","1"] ++ littleEndian (show ident) 4 ++ fields) ++ "};\n"
+
+littleEndian :: String -> Int -> [String]
+littleEndian e n = ["((" ++ e ++ " >> " ++ show (8*i) ++ ") & 255)" | i <- [0..n-1]]
+
+-- | Eight string bytes packed into one record's value field. The value field is
+-- little-endian, so the bytes are simply laid out in order. Clang folds the
+-- indexing of a constant string; the clamp keeps every read in bounds even when
+-- the chunk runs past the terminator, and the length answer says where to stop.
+stringRecord :: Int -> String -> Int -> String
+stringRecord ident name base =
+  answerArray ident (["1","0"] ++ replicate 6 "0" ++
+                     ["AIHC_BYTE(" ++ name ++ "," ++ show (base+i) ++ ")" | i <- [0..7]])
+
+-- Strings are answered in a single compile, so the probe must reserve a fixed
+-- number of byte chunks. Longer strings are rejected rather than truncated.
+stringCapacity :: Int
+stringCapacity = 256
+
+-- A directive argument may span source lines; a macro body may not, so the
+-- newlines are continued rather than flattened, keeping the argument verbatim.
+continued :: String -> String
+continued = concatMap (\c -> if c == '\n' then "\\\n" else [c])
+
+-- Reading past the terminator would leave the constant expression, so every
+-- index is clamped to a byte the string definitely has.
+stringMacros :: String
+stringMacros =
+  "#define AIHC_LEN(x) __builtin_strlen(x)\n" ++
+  "#define AIHC_BYTE(x,k) ((unsigned char)((x)[(k) < AIHC_LEN(x) ? (k) : 0]))\n"
 
 prepare :: FilePath -> String -> Result (String, Plan)
 prepare = prepareWithStyle NativeStyle
@@ -150,7 +187,8 @@ prepareWithStyle style file source = do
   pairs <- allocate 1 tokens
   let headers = if style == CrossStyle then "" else concat
         [location line ++ "#" ++ key ++ " " ++ arg ++ "\n" | Directive line key arg <- tokens, key `elem` controls]
-      prelude = "#include <stddef.h>\n#if defined(__APPLE__)\n#define AIHC_SECTION \"__DATA,__aihc_ans\"\n#else\n#define AIHC_SECTION \"aihc_ans\"\n#endif\n" ++ headers ++ record 0 0 "0"
+      strings = not (null [() | Directive _ "const_str" _ <- tokens])
+      prelude = "#include <stddef.h>\n#if defined(__APPLE__)\n#define AIHC_SECTION \"__DATA,__aihc_ans\"\n#else\n#define AIHC_SECTION \"aihc_ans\"\n#endif\n" ++ (if strings then stringMacros else "") ++ headers ++ record 0 0 "0"
   pure (prelude ++ concatMap fst pairs, Plan style file (map snd pairs))
   where
     -- Directives may own more than one query ID, so IDs are threaded rather
@@ -175,6 +213,19 @@ prepareWithStyle style file source = do
                 concat [record i 1 ("(" ++ cName ++ ")") | (i,(_,cName)) <- numbered]
           in pure (probe, (ident, Enumeration ty constructor
                             [(i, fromMaybe (haskellize cName) hsName) | (i,(hsName,cName)) <- numbered]))
+      | key == "const_str" =
+          -- A length query plus fixed-width byte chunks. The argument is named
+          -- once as a macro so the probe does not repeat it per byte.
+          let name = "aihc_str_" ++ show ident
+              chunks = zip [ident+1 .. ident + stringCapacity `div` 8] [0,8..]
+              probe = location line ++ "#ifdef hsc_const_str\n#error AIHC_UNSUPPORTED_template_override\n#endif\n" ++
+                "#define " ++ name ++ " (" ++ continued arg ++ ")\n" ++
+                "_Static_assert(__builtin_constant_p(AIHC_LEN(" ++ name ++ ")), \"AIHC_UNSUPPORTED_non_constant_string\");\n" ++
+                "_Static_assert(AIHC_LEN(" ++ name ++ ") <= " ++ show stringCapacity ++ ", \"AIHC_UNSUPPORTED_string_length\");\n" ++
+                record ident 1 ("AIHC_LEN(" ++ name ++ ")") ++
+                concat [stringRecord i name base | (i,base) <- chunks] ++
+                "#undef " ++ name ++ "\n"
+          in pure (probe, (ident, StringExpansion (map fst chunks)))
       | otherwise = case query key arg of
           Just expr -> pure (location line ++ "#ifdef hsc_" ++ key ++ "\n#error AIHC_UNSUPPORTED_template_override\n#endif\n" ++ record ident 1 expr, (ident,Expansion key))
           Nothing -> pure (location line ++ "#error AIHC_UNSUPPORTED_directive_" ++ key ++ "\n", (ident,Unsupported key))
@@ -206,6 +257,19 @@ haskellize (c:cs) = toLower c : go False cs
     go _ [] = []
     go _ ('_':rest) = go True rest
     go upper (x:rest) = (if upper then toUpper x else toLower x) : go False rest
+
+-- Mirrors template-hsc.h's hsc_const_str. Printable ASCII passes through, the
+-- quote and backslash are escaped, and every other byte becomes a decimal
+-- escape, followed by "\\&" when the next character would extend the number.
+-- The escaped form is always ASCII, so it does not depend on the output encoding.
+escapeString :: [Int] -> String
+escapeString bytes = "\"" ++ concat (zipWith piece bytes (map Just (drop 1 bytes) ++ [Nothing])) ++ "\""
+  where
+    piece b next
+      | b == 34 || b == 92 = ['\\', toEnum b]
+      | b >= 0x20 && b <= 0x7E = [toEnum b]
+      | otherwise = '\\' : show b ++ (if maybe False digit next then "\\&" else "")
+    digit n = n >= 48 && n <= 57
 
 -- The C preprocessor collapses whitespace when stringifying the enum type and
 -- constructor. Reproduce that instead of emitting the raw argument text.
@@ -270,7 +334,7 @@ finish (Plan style file pieces) answers = do
     render pending ((ident,piece):rest) = case M.lookup ident answers of
       Nothing -> render pending rest
       Just (Answer kind value) -> do
-        unless (kind == case piece of Expansion _ -> 1; _ -> 0) (err "answer kind mismatch")
+        unless (kind == case piece of Expansion _ -> 1; StringExpansion _ -> 1; _ -> 0) (err "answer kind mismatch")
         case piece of
           Literal line s -> do
             let (a,b) = break (== '\n') s
@@ -285,8 +349,19 @@ finish (Plan style file pieces) answers = do
             ss <- mapM (enumLine ty constructor) entries
             more <- render True rest
             pure (concat ss ++ more)
+          StringExpansion chunks -> do
+            bytes <- concat <$> mapM chunkBytes chunks
+            unless (value >= 0 && value <= toInteger (length bytes)) (err "string length out of range")
+            more <- render True rest
+            pure (escapeString (take (fromInteger value) bytes) ++ more)
           Control key _ -> render (pending || (style == NativeStyle && key `elem` ["if","ifdef","ifndef","elif","else","endif"])) rest
           Unsupported key -> err ("unsupported directive: " ++ key)
+    chunkBytes ident = case M.lookup ident answers of
+      Nothing -> err "missing or inconsistent branch/answer record"
+      Just (Answer kind value) -> do
+        unless (kind == 1) (err "answer kind mismatch")
+        unless (value >= 0) (err "invalid string chunk")
+        pure [fromInteger ((value `shiftR` (8*i)) .&. 255) | i <- [0..7 :: Int]]
     enumLine ty constructor (ident,hsName) = case M.lookup ident answers of
       Nothing -> err "missing or inconsistent branch/answer record"
       Just (Answer kind value) -> do

@@ -12,6 +12,11 @@ import compare
 NAMES = ['const', 'size', 'alignment', 'offset', 'peek', 'poke', 'ptr',
          'type', 'enum', 'conditional', 'define', 'syntax', 'crlf', 'utf8',
          'mixed-bytes']
+# Upstream's cross backend rejects #const_str outright, so these fixtures have a
+# native oracle only. They still run in the cross cells, where the candidate must
+# succeed and upstream must fail with exactly its documented unsupported message.
+NATIVE_ORACLE_ONLY = ['const_str']
+ALL_NAMES = NAMES + NATIVE_ORACLE_ONLY
 
 
 def main():
@@ -29,7 +34,7 @@ def main():
                   (args.cross_target, 'cross', '/' + args.cross_target + '/asm', True)]
     for triple, mode, suffix, via_asm in cells:
         flags = ['--target=' + triple, '--sysroot=' + args.sysroot, '-std=gnu11']
-        for name in NAMES:
+        for name in ALL_NAMES:
             cases.append(dict(id=name + '/' + mode + suffix, target=triple, mode=mode,
                               source=name + '.hsc', context=str(context),
                               flags=['--cc=' + args.clang] + ['--cflag=' + f for f in flags],
@@ -38,13 +43,19 @@ def main():
                               preflight=[args.clang, *flags, '-c', 'preflight.c', '-o', 'preflight.o']))
     summary = compare.run_suite(dict(candidate=[args.candidate], reference=[args.reference], cases=cases, env={'LC_ALL': 'C.UTF-8'}), args.output)
     # Deliberate exact zero baseline. Never derive expected counts from results.
-    zero = dict(cases=15, candidate_failures=0, divergences=0, reference_native_failures=0,
+    zero = dict(cases=len(ALL_NAMES), candidate_failures=0, divergences=0, reference_native_failures=0,
                 reference_cross_failures=0, reference_cross_unsupported=0,
                 reference_cross_other_failures=0, setup_failures=0, tool_errors=0)
-    expected = dict(counts={**zero, 'cases': 75 if args.cross_target else 45},
-                    by_target_mode={triple + '/' + mode: {**zero, 'cases': 30 if mode == 'cross' else 15}
+    # One upstream cross rejection per native-oracle-only fixture per cross cell.
+    def cell(count):
+        rejected = len(NATIVE_ORACLE_ONLY) * count
+        return dict(zero, cases=len(ALL_NAMES) * count,
+                    reference_cross_failures=rejected, reference_cross_unsupported=rejected)
+    cross_cells = sum(1 for _, mode, _, _ in cells if mode == 'cross')
+    expected = dict(counts=dict(cell(cross_cells), cases=len(ALL_NAMES) * len(cells)),
+                    by_target_mode={triple + '/' + mode: (cell(2) if mode == 'cross' else dict(zero))
                                     for triple, mode, _, _ in cells},
-                    case_ids=[name + '/' + mode + suffix for _, mode, suffix, _ in cells for name in NAMES],
+                    case_ids=[name + '/' + mode + suffix for _, mode, suffix, _ in cells for name in ALL_NAMES],
                     inapplicable=[])
     try:
         compare.assert_expected(summary, expected)
@@ -62,7 +73,9 @@ def main():
         root = Path(tmp)
         command = [args.candidate, '--cc=' + args.clang, '--target=' + args.target,
                    '--sysroot=' + args.sysroot, '-o', str(root / 'Result.hs')]
-        for source, diagnostic in [('#{const_str "hello"}', 'AIHC_UNSUPPORTED'),
+        for source, diagnostic in [('#include <stdlib.h>\nx = #{const_str getenv("HOME")}', 'AIHC_UNSUPPORTED_non_constant_string'),
+                                   ('x = #{const_str "' + 'A' * 257 + '"}', 'AIHC_UNSUPPORTED_string_length'),
+                                   ('#define hsc_const_str(x) 1\nx = #{const_str "a"}', 'AIHC_UNSUPPORTED_template_override'),
                                    ('#define hsc_size(x) 9\nx = #{size int}', 'AIHC_UNSUPPORTED_template_override'),
                                    ('x = #{const (__int128) 1}', 'AIHC_UNSUPPORTED_value_width'),
                                    ('x = #{const -0.25}', 'AIHC_UNSUPPORTED_noninteger_value'),

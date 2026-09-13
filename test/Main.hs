@@ -14,6 +14,7 @@ main = do
   objectTests
   featureTests
   enumTests
+  constStrTests
   assert "escaped hash" (parse "x = ##x" == Right [Text 1 "x = #x"])
   assert "protected text" (parse "x = \"#bad\" -- #bad\n{- #bad {- x -} -}" == Right [Text 1 "x = \"#bad\" -- #bad\n{- #bad {- x -} -}"])
   assert "braced query" (parse "x=#{const (1 + 2)}" == Right [Text 1 "x=",Directive 1 "const" "(1 + 2)"])
@@ -30,6 +31,55 @@ main = do
       assert "unknown ID" (case finish p (M.insert 99 (Answer 0 0) a) of Left _ -> True; _ -> False)
       assert "missing query" (case finish p (M.delete 2 a) of Left _ -> True; _ -> False)
   putStrLn "pure unit tests passed"
+
+-- #const_str owns a length query plus fixed-width byte chunks, and its escaping
+-- must reproduce template-hsc.h byte for byte.
+constStrTests :: IO ()
+constStrTests = do
+  case prepare "T.hsc" "x = #{const_str FOO}\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      assert "const_str names its argument once" ("#define aihc_str_2 (FOO)\n" `isInfixOf` probe)
+      assert "const_str guards template overrides" ("#ifdef hsc_const_str" `isInfixOf` probe)
+      assert "const_str rejects runtime pointers" ("AIHC_UNSUPPORTED_non_constant_string" `isInfixOf` probe)
+      assert "const_str bounds the length" ("AIHC_UNSUPPORTED_string_length" `isInfixOf` probe)
+      assert "const_str clamps its reads" ("AIHC_BYTE(aihc_str_2,255)" `isInfixOf` probe)
+      -- "a\"b\\c\1\&9z\255": escaping, the \& separator and a chunk boundary.
+      let bytes = [97,34,98,92,99,1,57,122,255]
+          answers = M.fromList ([(0,Answer 0 0),(1,Answer 0 0),(2,Answer 1 (toInteger (length bytes)))] ++
+                                chunks 3 bytes ++ [(35,Answer 0 0)])
+          output = "{-# LINE 1 \"T.hsc\" #-}\nx = \"a\\\"b\\\\c\\1\\&9z\\255\"\n{-# LINE 2 \"T.hsc\" #-}\n"
+      assert "const_str output" (finish plan answers == Right output)
+      assert "const_str missing chunk" (case finish plan (M.delete 20 answers) of Left _ -> True; _ -> False)
+      assert "const_str chunk kind" (case finish plan (M.insert 20 (Answer 0 0) answers) of Left _ -> True; _ -> False)
+      assert "const_str length beyond capacity"
+        (case finish plan (M.insert 2 (Answer 1 257) answers) of Left _ -> True; _ -> False)
+      assert "const_str empty string"
+        (finish plan (M.insert 2 (Answer 1 0) answers) ==
+         Right "{-# LINE 1 \"T.hsc\" #-}\nx = \"\"\n{-# LINE 2 \"T.hsc\" #-}\n")
+  case prepare "T.hsc" "x = #{const_str (\"a\"\n \"b\")}\n" of
+    Left e -> error (show e)
+    Right (probe,_) ->
+      assert "const_str continues a multi-line argument"
+        ("#define aihc_str_2 ((\"a\"\\\n \"b\"))\n" `isInfixOf` probe)
+  -- An inactive branch must drop the directive, byte chunks included.
+  case prepare "T.hsc" "#if 0\n#{const_str FOO}\n#endif\n" of
+    Left e -> error (show e)
+    Right (_,plan) -> do
+      let inactive = M.fromList [(0,Answer 0 0),(37,Answer 0 0),(38,Answer 0 0)]
+      assert "inactive const_str"
+        (finish plan inactive == Right "{-# LINE 1 \"T.hsc\" #-}\n\n{-# LINE 4 \"T.hsc\" #-}\n")
+      assert "inactive const_str chunk"
+        (case finish plan (M.insert 4 (Answer 1 65) inactive) of Left _ -> True; _ -> False)
+
+-- Pack bytes into the eight-byte value field of consecutive chunk records, the
+-- way the probe lays them out. Trailing chunks answer with the clamped byte.
+chunks :: Int -> [Int] -> [(Int, Answer)]
+chunks first bytes =
+  [ (first + i, Answer 1 (sum [toInteger b * 256^k | (k,b) <- zip [0 :: Int ..] (group i)]))
+  | i <- [0 .. 31] ]
+  where
+    group i = take 8 (drop (8*i) bytes ++ repeat (case bytes of b:_ -> b; [] -> 0))
 
 -- #enum owns one query per enumerated constant, so it exercises multi-answer
 -- directives as well as upstream's exact naming and spacing quirks.
