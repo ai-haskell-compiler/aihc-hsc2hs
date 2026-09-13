@@ -12,10 +12,11 @@ import compare
 NAMES = ['const', 'size', 'alignment', 'offset', 'peek', 'poke', 'ptr',
          'type', 'enum', 'conditional', 'define', 'syntax', 'crlf', 'utf8',
          'mixed-bytes']
-# Upstream's cross backend rejects #const_str outright, so these fixtures have a
-# native oracle only. They still run in the cross cells, where the candidate must
-# succeed and upstream must fail with exactly its documented unsupported message.
-NATIVE_ORACLE_ONLY = ['const_str']
+# Upstream's cross backend rejects #const_str and #let outright, so these
+# fixtures have a native oracle only. They still run in the cross cells, where
+# the candidate must succeed and upstream must fail with exactly its documented
+# unsupported message.
+NATIVE_ORACLE_ONLY = ['const_str', 'let']
 ALL_NAMES = NAMES + NATIVE_ORACLE_ONLY
 
 
@@ -77,6 +78,9 @@ def main():
                                    ('x = #{const_str "' + 'A' * 257 + '"}', 'AIHC_UNSUPPORTED_string_length'),
                                    ('#define hsc_const_str(x) 1\nx = #{const_str "a"}', 'AIHC_UNSUPPORTED_template_override'),
                                    ('#define hsc_size(x) 9\nx = #{size int}', 'AIHC_UNSUPPORTED_template_override'),
+                                   ('#let bad x = "%s", (x)\nx = #{bad 1}', 'AIHC_UNSUPPORTED_let_definition'),
+                                   ('#let bad x = "%d %d", (x)\nx = #{bad 1}', 'AIHC_UNSUPPORTED_let_definition'),
+                                   ('#let neg x = "%u", (x)\nx = #{neg -1}', 'negative value'),
                                    ('x = #{const (__int128) 1}', 'AIHC_UNSUPPORTED_value_width'),
                                    ('x = #{const -0.25}', 'AIHC_UNSUPPORTED_noninteger_value'),
                                    ('#define LATE 1\nx = #{const LATE}\n#undef LATE\n', 'LATE'),
@@ -96,6 +100,13 @@ def main():
                                env={**os.environ, 'LC_ALL': locale})
                 outputs.append((root / 'Result.hs').read_bytes())
             assert outputs[0] == outputs[1]
+        # #let has no upstream cross oracle: assert both modes agree instead.
+        file.write_text('#let twice x = "%d", 2 * (x)\nx = #{twice 21}\n')
+        modes = []
+        for mode in [[], ['--cross-compile']]:
+            subprocess.run(command + mode + [str(file)], check=True, capture_output=True, timeout=30)
+            modes.append((root / 'Result.hs').read_bytes())
+        assert modes[0] == modes[1] and b'x = 42' in modes[0], modes
         file.write_text('#if 0\n#{unknown runtime()}\n#endif\nx = #{const 1}\n')
         subprocess.run(command + [str(file)], check=True, capture_output=True, timeout=30)
         guard = root / 'compile-only-guard'

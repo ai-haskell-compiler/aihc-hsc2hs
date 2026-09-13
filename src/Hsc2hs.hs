@@ -10,7 +10,7 @@ import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
 import qualified Data.Map.Strict as M
 import Data.Bits (shiftR, (.&.))
-import Data.Char (isAlphaNum, isSpace, toLower, toUpper)
+import Data.Char (digitToInt, isAlphaNum, isDigit, isHexDigit, isOctDigit, isSpace, toLower, toUpper)
 import Data.List (intercalate, isPrefixOf)
 import Data.Maybe (fromMaybe)
 import Control.Exception (IOException, try)
@@ -41,14 +41,29 @@ defaultConfig t = Config "clang" t [] 60000000 NativeStyle
 
 data Token = Text Int String | Directive Int String String deriving (Eq, Show)
 data Piece = Literal Int String | Expansion String | Enumeration String String [(Int, String)]
-           | StringExpansion [Int] | Control String String | Unsupported String
+           | StringExpansion [Int] | Control String String | LetDefinition
+           | LetCall [FormatItem] Int [Int] (Maybe (String, Int))
+           | Unsupported String
+  deriving (Eq, Show)
+
+-- | A @#let@ body is a printf argument list: a literal format string and one C
+-- expression per conversion. The expressions become ordinary constant queries
+-- and the formatting is done here, so no printf is ever executed.
+data LetDef = LetDef { letParams :: String, letFormat :: [FormatItem], letArguments :: [String] }
+  deriving (Eq, Show)
+-- | A parsed format string: verbatim text and printf conversions.
+data FormatItem = Verbatim String | Conversion String (Maybe Int) (Maybe Int) Char
   deriving (Eq, Show)
 
 -- | Query IDs a piece owns beyond its own presence marker: one per enumerated
--- constant for @#enum@, and one per byte chunk for @#const_str@.
+-- constant for @#enum@, one per byte chunk for @#const_str@, and for a @#let@
+-- call a marker for the @#let@ branch, one query per format argument and the
+-- query of the built-in it shadows, because only the C preprocessor knows which
+-- branch is live.
 subQueries :: Piece -> [Int]
 subQueries (Enumeration _ _ entries) = map fst entries
 subQueries (StringExpansion chunks) = chunks
+subQueries (LetCall _ marker args builtin) = marker : args ++ map snd (maybe [] pure builtin)
 subQueries _ = []
 data Plan = Plan OutputStyle FilePath [(Int, Piece)] deriving (Eq, Show)
 
@@ -184,24 +199,38 @@ prepare = prepareWithStyle NativeStyle
 prepareWithStyle :: OutputStyle -> FilePath -> String -> Result (String, Plan)
 prepareWithStyle style file source = do
   tokens <- parse source
-  pairs <- allocate 1 tokens
-  let headers = if style == CrossStyle then "" else concat
-        [location line ++ "#" ++ key ++ " " ++ arg ++ "\n" | Directive line key arg <- tokens, key `elem` controls]
+  let definitions = letDefinitions tokens
+      -- Upstream defines every #let in its header program, so a definition is
+      -- in scope for call sites that precede it. Reproducing that means
+      -- hoisting the control directives too, and a file that uses #let
+      -- therefore builds the same probe in both output styles.
+      hoisted = style == NativeStyle || not (M.null definitions)
+  pairs <- allocate definitions hoisted 1 tokens
+  let headers = if not hoisted then "" else concat
+        [ if key == "let"
+            then either (const "") (location line ++) (fmap (defineLet (letName arg))
+                   (M.findWithDefault (Left "malformed #let") (letName arg) definitions))
+            else location line ++ "#" ++ key ++ " " ++ arg ++ "\n"
+        | Directive line key arg <- tokens, key `elem` controls || key == "let" ]
       strings = not (null [() | Directive _ "const_str" _ <- tokens])
       prelude = "#include <stddef.h>\n#if defined(__APPLE__)\n#define AIHC_SECTION \"__DATA,__aihc_ans\"\n#else\n#define AIHC_SECTION \"aihc_ans\"\n#endif\n" ++ (if strings then stringMacros else "") ++ headers ++ record 0 0 "0"
   pure (prelude ++ concatMap fst pairs, Plan style file (map snd pairs))
   where
     -- Directives may own more than one query ID, so IDs are threaded rather
     -- than zipped against the token list.
-    allocate _ [] = pure []
-    allocate ident (tok:toks) = do
-      entry <- lower ident tok
-      more <- allocate (ident + 1 + length (subQueries (snd (snd entry)))) toks
+    allocate _ _ _ [] = pure []
+    allocate defs hoisted ident (tok:toks) = do
+      entry <- lower defs hoisted ident tok
+      more <- allocate defs hoisted (ident + 1 + length (subQueries (snd (snd entry)))) toks
       pure (entry:more)
-    lower ident (Text line s) = pure (record ident 0 "0", (ident,Literal line s))
-    lower ident (Directive line key arg)
+    lower _ _ ident (Text line s) = pure (record ident 0 "0", (ident,Literal line s))
+    lower defs hoisted ident (Directive line key arg)
+      -- The macros were emitted in the prelude; the definition itself is only a
+      -- presence marker here. A definition upstream would accept but this tool
+      -- cannot represent is only a failure where it is called, never by itself.
+      | key == "let" = pure (record ident 0 "0", (ident,LetDefinition))
       | key `elem` controls =
-          let directive = if style == NativeStyle && key `notElem` conditionals then "" else location line ++ "#" ++ key ++ " " ++ arg ++ "\n"
+          let directive = if hoisted && key `notElem` conditionals then "" else location line ++ "#" ++ key ++ " " ++ arg ++ "\n"
           in pure (directive ++ record ident 0 "0", (ident,Control key arg))
       | key == "enum" =
           -- One presence marker plus one constant query per enumerated name.
@@ -213,6 +242,8 @@ prepareWithStyle style file source = do
                 concat [record i 1 ("(" ++ cName ++ ")") | (i,(_,cName)) <- numbered]
           in pure (probe, (ident, Enumeration ty constructor
                             [(i, fromMaybe (haskellize cName) hsName) | (i,(hsName,cName)) <- numbered]))
+      | M.member key defs =
+          pure (letCall line key arg ident (M.findWithDefault (Left "malformed #let") key defs))
       | key == "const_str" =
           -- A length query plus fixed-width byte chunks. The argument is named
           -- once as a macro so the probe does not repeat it per byte.
@@ -227,8 +258,29 @@ prepareWithStyle style file source = do
                 "#undef " ++ name ++ "\n"
           in pure (probe, (ident, StringExpansion (map fst chunks)))
       | otherwise = case query key arg of
-          Just expr -> pure (location line ++ "#ifdef hsc_" ++ key ++ "\n#error AIHC_UNSUPPORTED_template_override\n#endif\n" ++ record ident 1 expr, (ident,Expansion key))
-          Nothing -> pure (location line ++ "#error AIHC_UNSUPPORTED_directive_" ++ key ++ "\n", (ident,Unsupported key))
+          Just expr -> pure (location line ++ builtinProbe key expr ident, (ident,Expansion key))
+          Nothing -> pure (unsupported line ("directive_" ++ key) ident ("unsupported directive: " ++ key))
+    -- Whether a #let name is in scope is a C preprocessor fact: its definition
+    -- can sit in a branch only the target's headers decide. Both readings are
+    -- emitted and the branch that survives says which one to reconstruct.
+    letCall line key arg ident entry = case entry of
+      Left reason -> unsupported line "let_definition" ident reason
+      Right def ->
+        let count = length (letArguments def)
+            marker = ident + 1
+            args = [ident + 2 .. ident + 1 + count]
+            builtin = fmap (const (key, ident + 2 + count)) (query key arg)
+            fallback = case builtin of
+              Just (name,fid) -> location line ++ builtinProbe name (fromMaybe "0" (query name arg)) fid
+              Nothing -> "#error AIHC_UNSUPPORTED_directive_" ++ key ++ "\n"
+            probe = location line ++ "#ifdef " ++ letFlag key ++ "\n" ++ record marker 0 "0" ++
+                    concat [record i 1 (letMacro key k ++ "(" ++ arg ++ ")") | (k,i) <- zip [0..] args] ++
+                    "#else\n" ++ fallback ++ "#endif\n" ++ record ident 0 "0"
+        in (probe, (ident, LetCall (letFormat def) marker args builtin))
+    builtinProbe key expr ident =
+      "#ifdef hsc_" ++ key ++ "\n#error AIHC_UNSUPPORTED_template_override\n#endif\n" ++ record ident 1 expr
+    unsupported line tag ident message =
+      (location line ++ "#error AIHC_UNSUPPORTED_" ++ tag ++ "\n", (ident,Unsupported message))
     location line = "#line " ++ show line ++ " " ++ show file ++ "\n"
     conditionals = ["if","ifdef","ifndef","elif","else","endif"]
     controls = ["include","define","undef","error","warning"] ++ conditionals
@@ -247,6 +299,178 @@ parseEnum arg = case break (== ',') arg of
     split entry = case break (== '=') entry of
       (cName, []) -> (Nothing, cName)
       (hsName, _:cName) -> (Just hsName, cName)
+
+-- | Collect every @#let@ definition. A name defined more than once carries the
+-- reason it cannot be used: upstream lets the last definition win for every
+-- call site, which is not decidable here when the definitions are conditional.
+letDefinitions :: [Token] -> M.Map String (Either String LetDef)
+letDefinitions tokens = M.fromListWith duplicate
+  [(letName arg, parseLet arg) | Directive _ "let" arg <- tokens]
+  where duplicate _ _ = Left "a #let name is defined more than once"
+
+-- | The name a @#let@ binds, without validating the rest of the definition.
+letName :: String -> String
+letName = takeWhile (not . isSpace) . trim . takeWhile (/= '=')
+
+-- | Split @#let name params = "format", expr, ...@ exactly as upstream does:
+-- the first @=@ ends the header and the first space in the header ends the name.
+parseLet :: String -> Either String LetDef
+parseLet arg = case break (== '=') arg of
+  (_, "") -> Left "a #let definition needs a body"
+  (header, _:body) -> do
+    let (name, params) = break isSpace (trim header)
+    unless (identifier name) (Left ("#let defines an invalid name: " ++ name))
+    pieces <- splitTop body
+    case pieces of
+      (text:exprs) -> do
+        items <- parseFormat =<< stringLiteral text
+        let conversions = length [c | Conversion _ _ _ c <- items]
+        unless (conversions == length exprs)
+          (Left ("#let " ++ name ++ " has " ++ show conversions ++ " conversions for "
+                 ++ show (length exprs) ++ " arguments"))
+        pure (LetDef (trim params) items (map trim exprs))
+      [] -> Left "a #let body needs a format string"
+
+identifier :: String -> Bool
+identifier [] = False
+identifier name@(c:_) = not (isDigit c) && all (\x -> isAlphaNum x || x == '_') name
+
+-- | Split a C argument list on top-level commas, preserving quotes, comments
+-- and nested delimiters verbatim.
+splitTop :: String -> Either String [String]
+splitTop = walk [] "" []
+  where
+    unbalanced = Left "unbalanced delimiters in a #let body"
+    walk stack acc out [] = if null stack then Right (reverse (reverse acc:out)) else unbalanced
+    walk stack acc out xs@(c:cs)
+      | null stack && c == ',' = walk stack "" (reverse acc:out) cs
+      | c `elem` "\"'" = case quoted c [c] cs of
+          Left (Diagnostic m) -> Left m
+          Right (a,b) -> walk stack (reverse a ++ acc) out b
+      | "/*" `isPrefixOf` xs = case comment (drop 2 xs) of
+          Nothing -> Left "unterminated C comment in a #let body"
+          Just (a,b) -> walk stack (reverse ("/*" ++ a) ++ acc) out b
+      | c `elem` "([{" = walk (close c:stack) (c:acc) out cs
+      | c `elem` ")]}" = case stack of
+          k:ks | k == c -> walk ks (c:acc) out cs
+          _ -> unbalanced
+      | otherwise = walk stack (c:acc) out cs
+    comment [] = Nothing
+    comment xs@(c:cs)
+      | "*/" `isPrefixOf` xs = Just ("*/", drop 2 xs)
+      | otherwise = fmap (\(a,b) -> (c:a,b)) (comment cs)
+    close '(' = ')'
+    close '[' = ']'
+    close _ = '}'
+
+-- | Decode one or more adjacent C string literals into the bytes printf would
+-- write for them.
+stringLiteral :: String -> Either String String
+stringLiteral text = case trim text of
+  ('"':rest) -> go rest
+  _ -> Left "a #let format must be a literal string"
+  where
+    go [] = Left "unterminated #let format string"
+    go ('"':rest) = case trim rest of
+      "" -> Right ""
+      ('"':more) -> go more
+      _ -> Left "unexpected text after a #let format string"
+    go ('\\':c:rest) = do (decoded,more) <- escape c rest; (decoded ++) <$> go more
+    go (c:rest) = (c:) <$> go rest
+    escape c rest = case lookup c simple of
+      Just decoded -> Right ([decoded], rest)
+      Nothing
+        | c == 'x' -> case span isHexDigit rest of
+            ([], _) -> Left "empty \\x escape in a #let format string"
+            (ds, more) -> Right ([toEnum (number 16 ds `mod` 256)], more)
+        | isOctDigit c -> let ds = c : take 2 (takeWhile isOctDigit rest)
+                          in Right ([toEnum (number 8 ds `mod` 256)], drop (length ds - 1) rest)
+        | otherwise -> Left ("unsupported escape \\" ++ [c] ++ " in a #let format string")
+    number base = foldl (\acc d -> acc * base + digitToInt d) 0
+    simple = zip "ntrfvab\\\"'?" "\n\t\r\f\v\a\b\\\"'?"
+
+-- | Parse a printf format into literal text and conversions. Only conversions
+-- with an integer argument are representable as a compile-time constant, so
+-- everything else is rejected here rather than guessed at.
+parseFormat :: String -> Either String [FormatItem]
+parseFormat = go ""
+  where
+    verbatim acc = [Verbatim (reverse acc) | not (null acc)]
+    go acc [] = Right (verbatim acc)
+    go acc ('%':'%':cs) = go ('%':acc) cs
+    go acc ('%':cs) = do
+      let (flags, afterFlags) = span (`elem` "-+ #0") cs
+          (width, afterWidth) = span isDigit afterFlags
+          (precision, afterPrecision) = case afterWidth of
+            '.':more -> let (digits,rest) = span isDigit more in (Just (number digits), rest)
+            _ -> (Nothing, afterWidth)
+          (len, body) = span (`elem` "hljzt") afterPrecision
+      case body of
+        c:rest | c `elem` "diouxX" || (c == 'c' && null len) -> do
+                   unless (len `elem` ["","h","hh","l","ll","j","z","t"])
+                     (Left ("unsupported length modifier %" ++ len ++ [c] ++ " in a #let format"))
+                   (verbatim acc ++) . (Conversion flags (fmap number (nonEmpty width)) precision c:) <$> go "" rest
+               | otherwise -> Left ("unsupported conversion %" ++ [c] ++ " in a #let format")
+        [] -> Left "truncated conversion in a #let format"
+    go acc (c:cs) = go (c:acc) cs
+    nonEmpty s = if null s then Nothing else Just s
+    number = foldl (\acc d -> acc * 10 + digitToInt d) 0
+
+-- | Reproduce printf formatting for the decoded values, one per conversion.
+formatLet :: [FormatItem] -> [Integer] -> Result String
+formatLet format values = concat <$> go format values
+  where
+    go [] [] = pure []
+    go (Verbatim text:rest) vs = (text:) <$> go rest vs
+    go (item:rest) (v:vs) = do
+      text <- conversion item v
+      (text:) <$> go rest vs
+    go _ _ = err "mismatched #let format arguments"
+
+conversion :: FormatItem -> Integer -> Result String
+conversion (Verbatim text) _ = pure text
+conversion (Conversion flags width precision conv) value
+  | conv == 'c' = pure (justify flags width [toEnum (fromInteger (value `mod` 256))])
+  | conv `notElem` "di" && value < 0 =
+      err ("#let format uses %" ++ [conv] ++ " for the negative value " ++ show value)
+  | otherwise = pure (justify flags width (sign ++ digits))
+  where
+    base = case conv of { 'o' -> 8; 'x' -> 16; 'X' -> 16; _ -> 10 }
+    body = showBase base (conv == 'X') (abs value)
+    digits | precision == Just 0 && value == 0 = ""
+           | otherwise = replicate (fromMaybe 0 precision - length body) '0' ++ body
+    sign | conv `elem` "di" && value < 0 = "-"
+         | conv `elem` "di" && '+' `elem` flags = "+"
+         | conv `elem` "di" && ' ' `elem` flags = " "
+         | '#' `elem` flags && conv == 'o' && take 1 digits /= "0" = "0"
+         | '#' `elem` flags && conv `elem` "xX" && value /= 0 = if conv == 'x' then "0x" else "0X"
+         | otherwise = ""
+    justify fs w text
+      | padding <= 0 = text
+      | '-' `elem` fs = text ++ replicate padding ' '
+      | '0' `elem` fs && precision == Nothing && conv /= 'c' =
+          take (length sign) text ++ replicate padding '0' ++ drop (length sign) text
+      | otherwise = replicate padding ' ' ++ text
+      where padding = fromMaybe 0 w - length text
+
+showBase :: Integer -> Bool -> Integer -> String
+showBase base upper value
+  | value < base = [digit value]
+  | otherwise = showBase base upper (value `div` base) ++ [digit (value `mod` base)]
+  where digit d = (if upper then toUpper else id) ("0123456789abcdef" !! fromInteger d)
+
+-- | The probe-side names a @#let@ definition introduces: a definedness flag and
+-- one expression macro per format argument. Parameter substitution is left to
+-- the C preprocessor, which also decides whether the definition is live.
+letFlag :: String -> String
+letFlag name = "aihc_let_defined_" ++ name
+letMacro :: String -> Int -> String
+letMacro name index = "aihc_let_" ++ name ++ "_" ++ show index
+defineLet :: String -> LetDef -> String
+defineLet name def = concat (("#define " ++ letFlag name ++ " 1\n") :
+  [ "#define " ++ letMacro name index ++ "(" ++ letParams def ++ ") (" ++ joinLines expr ++ ")\n"
+  | (index,expr) <- zip [0..] (letArguments def) ])
+  where joinLines = intercalate " \\\n" . lines
 
 -- Mirrors template-hsc.h's hsc_haskellize: lower case with underscores
 -- consumed and the following letter upper-cased.
@@ -323,6 +547,14 @@ finish (Plan style file pieces) answers = do
             require (present == parent)
             validate parent outer rest
           _ -> err "unexpected endif"
+        -- Exactly one of the #let and built-in readings survives preprocessing.
+        LetCall _ marker args builtin -> do
+          let chosen = M.member marker answers
+              shadowed = maybe False (\(_,i) -> M.member i answers) builtin
+          require (present == active)
+          require (if active then chosen /= shadowed else not (chosen || shadowed))
+          require (all (\i -> M.member i answers == chosen) args)
+          validate active stack rest
         _ -> do
           require (present == active)
           require (all (\i -> M.member i answers == active) (subQueries piece))
@@ -354,14 +586,27 @@ finish (Plan style file pieces) answers = do
             unless (value >= 0 && value <= toInteger (length bytes)) (err "string length out of range")
             more <- render True rest
             pure (escapeString (take (fromInteger value) bytes) ++ more)
+          LetCall format marker args builtin -> do
+            s <- if M.member marker answers
+                   then mapM answer args >>= formatLet format
+                   else case builtin of
+                     Just (key,i) -> answer i >>= expansion key
+                     Nothing -> err "missing or inconsistent branch/answer record"
+            more <- render True rest
+            pure (s ++ more)
+          -- A definition emits nothing, exactly as upstream's does.
+          LetDefinition -> render pending rest
           Control key _ -> render (pending || (style == NativeStyle && key `elem` ["if","ifdef","ifndef","elif","else","endif"])) rest
-          Unsupported key -> err ("unsupported directive: " ++ key)
+          Unsupported message -> err message
     chunkBytes ident = case M.lookup ident answers of
       Nothing -> err "missing or inconsistent branch/answer record"
       Just (Answer kind value) -> do
         unless (kind == 1) (err "answer kind mismatch")
         unless (value >= 0) (err "invalid string chunk")
         pure [fromInteger ((value `shiftR` (8*i)) .&. 255) | i <- [0..7 :: Int]]
+    answer ident = case M.lookup ident answers of
+      Just (Answer 1 value) -> pure value
+      _ -> err "missing or inconsistent branch/answer record"
     enumLine ty constructor (ident,hsName) = case M.lookup ident answers of
       Nothing -> err "missing or inconsistent branch/answer record"
       Just (Answer kind value) -> do

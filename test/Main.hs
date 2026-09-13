@@ -4,7 +4,7 @@ import Hsc2hs.Object
 import qualified Data.ByteString as B
 import qualified Data.Map.Strict as M
 import Control.Monad (unless)
-import Data.List (isInfixOf)
+import Data.List (isInfixOf, isPrefixOf)
 
 assert :: String -> Bool -> IO ()
 assert label ok = unless ok (error label)
@@ -15,6 +15,7 @@ main = do
   featureTests
   enumTests
   constStrTests
+  letTests
   assert "escaped hash" (parse "x = ##x" == Right [Text 1 "x = #x"])
   assert "protected text" (parse "x = \"#bad\" -- #bad\n{- #bad {- x -} -}" == Right [Text 1 "x = \"#bad\" -- #bad\n{- #bad {- x -} -}"])
   assert "braced query" (parse "x=#{const (1 + 2)}" == Right [Text 1 "x=",Directive 1 "const" "(1 + 2)"])
@@ -80,6 +81,86 @@ chunks first bytes =
   | i <- [0 .. 31] ]
   where
     group i = take 8 (drop (8*i) bytes ++ repeat (case bytes of b:_ -> b; [] -> 0))
+-- A #let call carries both readings of the directive: the template's own and
+-- the built-in it shadows. Only the C preprocessor knows which one is live.
+letTests :: IO ()
+letTests = do
+  case prepare "T.hsc" "#let twice x = \"%d twice\", 2 * (x)\nv = #{twice 21}\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      assert "let defines an expression macro"
+        ("#define aihc_let_twice_0(x) (2 * (x))" `isInfixOf` probe)
+      assert "let marks its own definedness" ("#define aihc_let_defined_twice 1" `isInfixOf` probe)
+      assert "let call substitutes through the C preprocessor"
+        ("aihc_let_twice_0(21)" `isInfixOf` probe)
+      assert "let call guards on definedness" ("#ifdef aihc_let_defined_twice" `isInfixOf` probe)
+      -- A name with no built-in reading has no fallback query to answer.
+      assert "let call without a built-in" ("#error AIHC_UNSUPPORTED_directive_twice" `isInfixOf` probe)
+      let answers = M.fromList ([(i,Answer 0 0) | i <- [0,1,2,3,4,6]] ++ [(5,Answer 1 42)])
+      assert "let output" (finish plan answers == Right
+        "{-# LINE 1 \"T.hsc\" #-}\n\nv = 42 twice\n{-# LINE 3 \"T.hsc\" #-}\n")
+      assert "let argument kind" (case finish plan (M.insert 5 (Answer 0 42) answers) of Left _ -> True; _ -> False)
+      assert "let missing argument" (case finish plan (M.delete 5 answers) of Left _ -> True; _ -> False)
+  -- The corpus idiom: a #let that shadows a built-in template.
+  case prepare "T.hsc" "#let alignment t = \"%lu\", (unsigned long)sizeof(t)\nv = #{alignment int}\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      assert "shadowed built-in keeps its own query" ("offsetof(struct { char a;" `isInfixOf` probe)
+      assert "shadowed built-in keeps its override guard" ("#ifdef hsc_alignment" `isInfixOf` probe)
+      let common = M.fromList [(i,Answer 0 0) | i <- [0,1,2,3,7]]
+          chosen = M.union common (M.fromList [(4,Answer 0 0),(5,Answer 1 4)])
+          shadowed = M.insert 6 (Answer 1 8) common
+          rendered value = Right ("{-# LINE 1 \"T.hsc\" #-}\n\nv = " ++ value ++ "\n{-# LINE 3 \"T.hsc\" #-}\n")
+      assert "live #let wins" (finish plan chosen == rendered "4")
+      assert "dead #let falls back to the built-in" (finish plan shadowed == rendered "8")
+      assert "both readings cannot answer"
+        (case finish plan (M.insert 6 (Answer 1 8) chosen) of Left _ -> True; _ -> False)
+      assert "neither reading answers" (case finish plan common of Left _ -> True; _ -> False)
+  -- Formatting is reconstructed here; the values are ordinary target queries.
+  mapM_ formatted
+    [ ("%d", -3, "-3"), ("%5d", 42, "   42"), ("%-5d|", 42, "42   |")
+    , ("%05d", 42, "00042"), ("%+d", 42, "+42"), ("%08lx", 42, "0000002a")
+    , ("%#o", 8, "010"), ("%#X", 255, "0XFF"), ("%.4u", 7, "0007")
+    , ("%llu", 18446744073709551615, "18446744073709551615"), ("%c", 65, "A")
+    , ("100%% of %d", 1, "100% of 1") ]
+  mapM_ rejected
+    [ "#let bad x = \"%s\", (x)\nv = #{bad 1}\n"
+    , "#let bad x = \"%f\", (x)\nv = #{bad 1}\n"
+    , "#let bad x = \"%d %d\", (x)\nv = #{bad 1}\n"
+    , "#let bad x = FORMAT, (x)\nv = #{bad 1}\n"
+    , "#let 9bad x = \"%d\", (x)\nv = #{9bad 1}\n"
+    , "#let bad x = \"%d\", (x)\n#let bad x = \"%d\", 2 * (x)\nv = #{bad 1}\n" ]
+  -- Upstream defines every #let in its header program, so a call may precede
+  -- the definition. The macros are hoisted into the prelude to match.
+  case prepare "T.hsc" "v = #{twice 21}\n#let twice x = \"%d\", 2 * (x)\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      let prelude = takeWhile (/= "#line 1 \"T.hsc\"") (lines probe)
+      assert "let macros are hoisted"
+        (any ("#define aihc_let_twice_0(x) (2 * (x))" `isPrefixOf`) prelude)
+      let answers = M.fromList ([(i,Answer 0 0) | i <- [0,1,2,3,5,6,7]] ++ [(4,Answer 1 42)])
+      assert "call before definition" (finish plan answers == Right
+        "{-# LINE 1 \"T.hsc\" #-}\nv = 42\n{-# LINE 2 \"T.hsc\" #-}\n\n")
+  -- An unsupported #let that is never called is not an error, and neither is
+  -- one whose call sits in a dead branch.
+  case prepare "T.hsc" "#let bad x = \"%s\", (x)\nv = #{const 1}\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      assert "unused #let stays silent" (not ("#error AIHC_UNSUPPORTED_let" `isInfixOf` probe))
+      assert "unused #let output" (finish plan (M.fromList [(0,Answer 0 0),(1,Answer 0 0),(2,Answer 0 0),(3,Answer 1 1),(4,Answer 0 0)])
+        == Right "{-# LINE 1 \"T.hsc\" #-}\n\nv = 1\n{-# LINE 3 \"T.hsc\" #-}\n")
+  where
+    -- One conversion, one argument: the smallest complete #let round trip.
+    formatted (format,value,expected) =
+      case prepare "T.hsc" ("#let fmt x = \"" ++ format ++ "\", (x)\nv = #{fmt 0}") of
+        Left e -> error (show e)
+        Right (_,plan) -> do
+          let answers = M.fromList ([(i,Answer 0 0) | i <- [0,1,2,3,4]] ++ [(5,Answer 1 value)])
+          assert ("let format " ++ format)
+            (finish plan answers == Right ("{-# LINE 1 \"T.hsc\" #-}\n\nv = " ++ expected))
+    rejected source = case prepare "T.hsc" source of
+      Left _ -> pure ()
+      Right (probe,_) -> assert ("rejected #let: " ++ source) ("#error AIHC_UNSUPPORTED_let" `isInfixOf` probe)
 
 -- #enum owns one query per enumerated constant, so it exercises multi-answer
 -- directives as well as upstream's exact naming and spacing quirks.
