@@ -1,0 +1,102 @@
+name: Stackage statistics
+# Re-measures the Stackage corpus once a week and proposes a pull request when
+# the reviewed baselines (and therefore the README tables) would change. The
+# measurement is never accepted automatically: the PR is the review step.
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04-arm
+            system: aarch64-linux
+            modes: native
+          - runner: macos-15
+            system: aarch64-darwin
+            modes: native cross
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+      - name: Measure the corpus
+        run: |
+          mkdir -p summaries
+          for mode in ${{ matrix.modes }}; do
+            nix build -L ".#stackage-$mode-report" --out-link "result-$mode"
+            cp "result-$mode/report/summary.json" "summaries/${{ matrix.system }}-$mode.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: summaries-${{ matrix.system }}
+          path: summaries/
+          if-no-files-found: error
+  propose:
+    needs: measure
+    # Use whichever measurements succeeded; a failed runner keeps its baseline.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      # A PR opened with the default token does not trigger the Nix workflow.
+      # Set the STATS_PR_TOKEN secret (a token with contents and pull-requests
+      # write access) to get CI on the proposed PR.
+      GH_TOKEN: ${{ secrets.STATS_PR_TOKEN || github.token }}
+      BRANCH: bot/stackage-stats
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.STATS_PR_TOKEN || github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: summaries-*
+          merge-multiple: true
+          path: summaries
+      - name: Import measurements and regenerate the README
+        run: |
+          shopt -s nullglob
+          files=(summaries/*.json)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No measurements were produced" >&2
+            exit 1
+          fi
+          args=()
+          for file in "${files[@]}"; do args+=(--import "$file"); done
+          python3 tools/readme-stats.py "${args[@]}" --write
+          printf '%s\n' "${files[@]#summaries/}" > imported.txt
+      - name: Open or update the pull request
+        run: |
+          if git diff --quiet -- README.md data/baselines; then
+            echo "Stackage statistics are unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add README.md data/baselines
+          git commit -m "chore: update Stackage compatibility statistics"
+          git push --force-with-lease origin "$BRANCH"
+          {
+            echo "The weekly corpus measurement differs from the checked-in baselines."
+            echo
+            echo "Refreshed measurements:"
+            sed 's/^/- /' imported.txt
+            echo
+            echo "Review the report diagnostics before merging; both improvements and"
+            echo "regressions change exact counters in \`data/baselines/\`."
+          } > body.md
+          number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --body-file body.md
+          else
+            gh pr create --base "${{ github.event.repository.default_branch }}" --head "$BRANCH" \
+              --title "chore: update Stackage compatibility statistics" --body-file body.md
+          fi
