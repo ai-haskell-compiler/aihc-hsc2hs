@@ -40,7 +40,7 @@ DIRECTIVES = [
     ('const', 'supported'), ('const_str', 'unsupported'),
     ('type', 'supported'), ('peek', 'supported'), ('poke', 'supported'),
     ('ptr', 'supported'), ('offset', 'supported'), ('size', 'supported'),
-    ('alignment', 'supported'), ('enum', 'unsupported'),
+    ('alignment', 'supported'), ('enum', 'supported'),
     ('let', 'unsupported'), ('def', 'unsupported'),
 ]
 HOSTS = {'aarch64-linux': 'ARM64 Linux', 'x86_64-linux': 'x86-64 Linux',

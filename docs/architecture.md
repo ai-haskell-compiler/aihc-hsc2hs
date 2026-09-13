@@ -61,6 +61,10 @@ headers belongs in the IO layer. Keep temporary host paths out of logical names.
 
 ## Answer records
 
+Most directives own a single query ID. `#enum` owns one presence marker plus one
+constant query per enumerated name, so plan IDs are threaded through the token
+list rather than assigned one per token.
+
 The MVP uses fixed 24-byte records: four magic/version bytes (`HSC`, version 1),
 a four-byte little-endian query ID, one kind byte, one negative flag, six reserved
 zero bytes, and an eight-byte little-endian value. Kind zero records mark active

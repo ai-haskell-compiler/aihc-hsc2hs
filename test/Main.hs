@@ -13,6 +13,7 @@ main = do
   assert "CR removal precedes parsing" (parse "a\rb\r\nc = #{const 1\\\r\n + 2}\r\n" == parse "ab\nc = #{const 1\\\n + 2}\n")
   objectTests
   featureTests
+  enumTests
   assert "escaped hash" (parse "x = ##x" == Right [Text 1 "x = #x"])
   assert "protected text" (parse "x = \"#bad\" -- #bad\n{- #bad {- x -} -}" == Right [Text 1 "x = \"#bad\" -- #bad\n{- #bad {- x -} -}"])
   assert "braced query" (parse "x=#{const (1 + 2)}" == Right [Text 1 "x=",Directive 1 "const" "(1 + 2)"])
@@ -29,6 +30,37 @@ main = do
       assert "unknown ID" (case finish p (M.insert 99 (Answer 0 0) a) of Left _ -> True; _ -> False)
       assert "missing query" (case finish p (M.delete 2 a) of Left _ -> True; _ -> False)
   putStrLn "pure unit tests passed"
+
+-- #enum owns one query per enumerated constant, so it exercises multi-answer
+-- directives as well as upstream's exact naming and spacing quirks.
+enumTests :: IO ()
+enumTests = do
+  case prepare "T.hsc" "#{enum Count  ,  Count, FOO_BAR, named = BAZ}\n" of
+    Left e -> error (show e)
+    Right (probe,plan) -> do
+      assert "enum probes each constant" (all (`isInfixOf` probe) ["(FOO_BAR)","( BAZ)"])
+      assert "enum guards template overrides" ("defined(hsc_enum) || defined(hsc_haskellize)" `isInfixOf` probe)
+      let answers = M.fromList [(0,Answer 0 0),(1,Answer 0 0),(2,Answer 1 7),(3,Answer 1 (-1)),(4,Answer 0 0)]
+      assert "enum output" (finish plan answers == Right (concat
+        [ "{-# LINE 1 \"T.hsc\" #-}\n"
+        , "fooBar :: Count\nfooBar = Count 7\n"
+        , "named  :: Count\nnamed  = Count (-1)\n"
+        , "\n{-# LINE 2 \"T.hsc\" #-}\n" ]))
+      assert "enum missing constant" (case finish plan (M.delete 3 answers) of Left _ -> True; _ -> False)
+      assert "enum unexpected constant" (case finish plan (M.insert 5 (Answer 1 0) answers) of Left _ -> True; _ -> False)
+      assert "enum constant kind" (case finish plan (M.insert 2 (Answer 0 0) answers) of Left _ -> True; _ -> False)
+  -- Upstream emits nothing for an argument without a constructor separator.
+  case prepare "T.hsc" "#{enum Count}" of
+    Left e -> error (show e)
+    Right (_,plan) ->
+      assert "malformed enum output" (finish plan (M.fromList [(0,Answer 0 0),(1,Answer 0 0)]) == Right "{-# LINE 1 \"T.hsc\" #-}\n")
+  -- An inactive branch must drop the whole directive, constants included.
+  case prepare "T.hsc" "#if 0\n#{enum Count, Count, A, B}\n#endif\n" of
+    Left e -> error (show e)
+    Right (_,plan) -> do
+      let inactive = M.fromList [(0,Answer 0 0),(7,Answer 0 0),(8,Answer 0 0)]
+      assert "inactive enum" (finish plan inactive == Right "{-# LINE 1 \"T.hsc\" #-}\n\n{-# LINE 4 \"T.hsc\" #-}\n")
+      assert "inactive enum constant" (case finish plan (M.insert 4 (Answer 1 1) inactive) of Left _ -> True; _ -> False)
 
 featureTests :: IO ()
 featureTests = mapM_ check
