@@ -62,8 +62,9 @@ headers belongs in the IO layer. Keep temporary host paths out of logical names.
 ## Answer records
 
 Most directives own a single query ID. `#enum` owns one presence marker plus one
-constant query per enumerated name, so plan IDs are threaded through the token
-list rather than assigned one per token.
+constant query per enumerated name, and `#const_str` owns a length query plus a
+fixed number of byte chunks, so plan IDs are threaded through the token list
+rather than assigned one per token.
 
 The MVP uses fixed 24-byte records: four magic/version bytes (`HSC`, version 1),
 a four-byte little-endian query ID, one kind byte, one negative flag, six reserved
@@ -71,6 +72,28 @@ zero bytes, and an eight-byte little-endian value. Kind zero records mark active
 source fragments/branches; kind one records carry query answers. ID zero is a
 required sentinel. The reconstruction plan checks missing and unexpected IDs.
 Records live in `aihc_ans` (ELF/COFF) or `__aihc_ans` (Mach-O).
+
+`#const_str` reuses that record shape rather than extending it. Eight string
+bytes are laid out directly in one record's little-endian value field, so a
+string costs one length query plus 32 chunk records and no new record kind. The
+probe names the directive argument as a macro once and clamps every index to a
+byte the string certainly has, keeping each read inside a constant expression
+that Clang folds:
+
+```c
+#define AIHC_BYTE(x,k) ((unsigned char)((x)[(k) < AIHC_LEN(x) ? (k) : 0]))
+```
+
+This works for any string the target compiler can evaluate at compile time:
+literals, concatenations, macros and named constant arrays. An argument that is
+only known at run time (`getenv("HOME")`, a `char *` variable) is rejected by a
+static assertion instead of being answered with garbage, as is a string longer
+than the 256-byte probe capacity. Upstream answers those by running the emitter;
+there is no static equivalent, and the candidate never gains one. The escaping
+itself is a pure function of the extracted bytes and reproduces
+`template-hsc.h`'s `hsc_const_str`, including its decimal escapes and the `\&`
+separator before a following digit. Its output is always ASCII, so it does not
+interact with output encoding.
 Generate scalar and byte-array constant initializers that Clang can
 evaluate using the target ABI. Encode integers into an explicit byte order;
 record signedness and width instead of truncating to the host's integer type.
@@ -92,11 +115,12 @@ IR compatibility, but does not remove ABI/header/compiler behavior differences.
 ## Custom templates
 
 The Stackage audit found 297 `#const_str` occurrences, 22 `#let` definitions and
-3,139 custom directive calls. Those are lexical findings, not build failures.
+3,139 custom directive calls. `#const_str` is now implemented for
+compile-time-constant strings (see above); the rest remain open. Those are lexical findings, not build failures.
 Examples include bindings-DSL directives (`#ccall`, `#num`, `#field`), GTK's
 `#gtk2hs_type`, ALSA accessor generators, and old alignment fallbacks.
 
-Strings backed by compile-time byte arrays can be extracted. Corpus-specific
+Corpus-specific
 formatting and binding generators can be represented as pure reconstruction
 rules plus explicit target queries. This is how compatibility should expand.
 

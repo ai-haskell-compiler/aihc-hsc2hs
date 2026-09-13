@@ -37,7 +37,7 @@ DIRECTIVES = [
     ('if', 'supported'), ('ifdef', 'supported'), ('ifndef', 'supported'),
     ('elif', 'supported'), ('else', 'supported'), ('endif', 'supported'),
     ('error', 'supported'), ('warning', 'supported'),
-    ('const', 'supported'), ('const_str', 'unsupported'),
+    ('const', 'supported'), ('const_str', 'supported'),
     ('type', 'supported'), ('peek', 'supported'), ('poke', 'supported'),
     ('ptr', 'supported'), ('offset', 'supported'), ('size', 'supported'),
     ('alignment', 'supported'), ('enum', 'supported'),
