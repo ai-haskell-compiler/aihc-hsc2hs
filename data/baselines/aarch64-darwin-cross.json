@@ -1,7 +1,7 @@
 {
   "counts": {
     "cases": 584,
-    "candidate_failures": 82,
+    "candidate_failures": 80,
     "divergences": 0,
     "reference_native_failures": 0,
     "reference_cross_failures": 77,
@@ -13,7 +13,7 @@
   "by_target_mode": {
     "x86_64-apple-darwin/cross": {
       "cases": 584,
-      "candidate_failures": 82,
+      "candidate_failures": 80,
       "divergences": 0,
       "reference_native_failures": 0,
       "reference_cross_failures": 77,
@@ -1517,13 +1517,11 @@
       "hmatrix-special-0.19.0.0/lib/Numeric/GSL/Special/Internal.hsc/cross",
       "hs-bibutils-6.10.0.0/src/Text/Bibutils.hsc/cross",
       "lmdb-0.2.5/hsrc_lib/Database/LMDB/Raw.hsc/cross",
-      "lua-2.3.4/src/Lua/Constants.hsc/cross",
       "minisat-0.1.4/minisat-haskell-bindings/MiniSat.hsc/cross",
       "netcode-io-0.0.3/Bindings/Netcode/IO.hsc/cross",
       "pango-0.13.12.0/Graphics/Rendering/Pango/Structs.hsc/cross",
       "pulse-simple-0.1.14/Sound/Pulse/Simple.hsc/cross",
       "reliable-io-0.0.2/Bindings/Reliable/IO.hsc/cross",
-      "simple-cairo-0.1.0.6/src/Graphics/Cairo/Drawing/TagsAndLinks.hsc/cross",
       "soxlib-0.0.3.2/src/Sound/SoxLib/FFI.hsc/cross",
       "squeather-0.8.0.0/src/Squeather/Internal/Bindings.hsc/cross",
       "text-icu-0.8.0.5/Data/Text/ICU/Char.hsc/cross",
