@@ -112,13 +112,54 @@ Nix toolchain and sysroots; run additional toolchain-version checks before
 widening supported versions. Object inspection avoids relying on LLVM textual
 IR compatibility, but does not remove ABI/header/compiler behavior differences.
 
+## `#let` templates
+
+Upstream turns `#let name params = body` into `#define hsc_name(params)
+hsc_printf (body);`, so a `#let` body is always a printf argument list. Each
+argument becomes its own expression macro in the probe
+(`#define aihc_let_name_0(params) (expr)`), and every call site emits one answer
+record per argument with the call's arguments applied to those macros. Parameter
+substitution is therefore done by the C preprocessor, not reimplemented here,
+which keeps stringification, token pasting and variadic parameters correct, and
+lets Clang evaluate each argument for the target ABI. The printf formatting is
+reproduced during reconstruction for integer conversions; a conversion needing a
+string, a float, or a value that is not a compile-time constant is rejected with
+an explicit diagnostic rather than approximated.
+
+Whether a `#let` name is in scope at a call site is a C preprocessor fact: the
+definition can sit in a branch only the target's headers decide, and a `#let`
+may shadow a built-in template such as `#alignment`. Both readings are therefore
+emitted under `#ifdef`, each with its own query ID, and the branch that survives
+preprocessing tells the reconstruction which one to render.
+
+Upstream defines every `#let` in its header program, so a definition is in scope
+for call sites that precede it in the source; `zeromq4-haskell` relies on this.
+The generated macros are therefore emitted in the prelude rather than at the
+definition's position, which means the control directives must be replayed there
+too: a file that uses `#let` builds the same probe in both output styles, and a
+file that does not is left exactly as it was. A name with more than one
+definition is rejected, because upstream lets the last one win for every call
+site, which is not decidable when the definitions are conditional. A definition
+that cannot be represented is only an error where it is called, never by
+itself.
+
+Two gaps remain deliberate. A `%s` conversion is rejected even though
+`#const_str` already extracts compile-time strings from the object file; reusing
+that machinery for `#let` arguments is the natural next step. And a `#let` that
+shadows `#const_str` itself is honoured only where its definition is live, since
+the shadowed reading of that directive is a byte-chunk extraction rather than a
+single query; a dead definition is reported instead of silently falling back.
+
 ## Custom templates
 
 The Stackage audit found 297 `#const_str` occurrences, 22 `#let` definitions and
 3,139 custom directive calls. `#const_str` is now implemented for
-compile-time-constant strings (see above); the rest remain open. Those are lexical findings, not build failures.
+compile-time-constant strings, and `#let` for printf templates over
+compile-time-constant integers, which covers every `#let` definition in the
+snapshot: all of them are the old alignment fallback (see above). The custom
+directive calls remain open. Those are lexical findings, not build failures.
 Examples include bindings-DSL directives (`#ccall`, `#num`, `#field`), GTK's
-`#gtk2hs_type`, ALSA accessor generators, and old alignment fallbacks.
+`#gtk2hs_type`, and ALSA accessor generators.
 
 Corpus-specific
 formatting and binding generators can be represented as pure reconstruction
