@@ -26,645 +26,645 @@
   "inapplicable": [
     {
       "corpus_id": "HsOpenSSL-x509-system-0.1.0.4/OpenSSL/X509/SystemStore/Win32.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Control.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Dialogue.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/AlphaBlend.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Bitmap.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Brush.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Clip.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Font.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Palette.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Pen.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/GDI/Types.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Key.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/LayeredWindow.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Menu.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Message.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Misc.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Resource.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Window.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Window/AnimateWindow.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Window/HotKey.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Window/IMM.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/Graphics/Win32/Window/PostMessage.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Automation/Input.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Automation/Input/Key.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Automation/Input/Mouse.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Console.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Console/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Console/Title.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/DLL.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/DLL/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/DebugApi.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/DebugApi/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Event.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/File.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/File/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/FileMapping.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/FileMapping/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Info.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Info/Computer.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Info/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Info/Version.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Mem.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/MinTTY.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/NLS.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/NamedPipes.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Path.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Path/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Process.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Registry.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Security.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Semaphore.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Shell.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Shell/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/SimpleMAPI.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/SymbolicLink.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/SymbolicLink/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Time.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Time/Internal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/Types.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Console.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/DLL.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/DebugApi.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/File.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/FileMapping.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Info.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Path.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Shell.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/SymbolicLink.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Time.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-2.14.1.0/System/Win32/WindowsString/Types.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "Win32-notify-0.3.0.3/src/System/Win32/FileNotify.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Nixpkgs declares the package or a required C provider unavailable on the selected target",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Nixpkgs declares the package or a required C provider unavailable on the selected target"
     },
     {
       "corpus_id": "ansi-terminal-1.1.5/win/System/Console/ANSI/Windows/Win32/MinTTY.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "base-4.20.2.0/src/System/CPUTime/Windows.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "btrfs-0.2.1.0/examples/btrfs-print-creation-time.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "conduit-1.3.6.1/src/System/Win32File.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "file-io-0.1.6/windows/System/File/Platform.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "foundation-0.0.30/Foundation/Network/HostName.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "foundation-0.0.30/Foundation/System/Bindings/Macos.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "fsnotify-0.4.4.0/win-src/System/Win32/FileNotify.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "ghc-internal-9.1003.0/src/GHC/Internal/Conc/POSIX/Const.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "ghc-internal-9.1003.0/src/GHC/Internal/Event/Windows.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "ghc-internal-9.1003.0/src/GHC/Internal/Event/Windows/ConsoleEvent.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "ghc-internal-9.1003.0/src/GHC/Internal/Event/Windows/FFI.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "ghc-internal-9.1003.0/src/GHC/Internal/IO/Windows/Handle.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "haskeline-0.8.2.1/System/Console/Haskeline/Backend/Win32.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "lukko-0.1.2/src-windows/Lukko/Internal/FD.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "lukko-0.1.2/src-windows/Lukko/Windows.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "mintty-0.1.4/src/System/Console/MinTTY/Win32.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "network-3.2.9.0/Network/Socket/Win32/Cmsg.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "network-3.2.9.0/Network/Socket/Win32/CmsgHdr.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "network-3.2.9.0/Network/Socket/Win32/MsgHdr.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "network-3.2.9.0/Network/Socket/Win32/WSABuf.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "pantry-0.10.1/app/test-pretty-exceptions/unix/System/Terminal.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "process-1.6.26.1/System/Process/Windows.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "sandwich-webdriver-0.3.0.1/windows-src/Test/Sandwich/WebDriver/Resolution.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "sendfile-0.7.11.6/src/Network/Socket/SendFile/Darwin.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "sendfile-0.7.11.6/src/Network/Socket/SendFile/Win32.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "simple-sendfile-0.2.32/Network/Sendfile/BSD.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "simple-sendfile-0.2.32/Network/Sendfile/IOVec.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "snap-server-1.1.2.1/src/System/SendFile/FreeBSD.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "socket-0.8.3.0/platform/win32/src/System/Socket/Internal/Platform.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "splice-0.6.1.1/src/System/IO/Splice/Linux.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "streaming-commons-0.2.3.1/System/Win32File.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "streamly-0.10.1/src/Streamly/Internal/System/IOVec/Type.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "terminal-0.2.0.0/platform/windows/src/System/Terminal/Platform.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Not selected by any buildable Cabal component for this target and the pinned snapshot flags"
     },
     {
       "corpus_id": "vty-windows-0.2.0.3/src/Graphics/Vty/Platform/Windows/WindowsConsoleInput.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Nixpkgs declares the package or a required C provider unavailable on the selected target",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Nixpkgs declares the package or a required C provider unavailable on the selected target"
     },
     {
       "corpus_id": "windns-0.1.0.1/src/Network/DNS/FFI.hsc",
+      "target": "aarch64-unknown-linux-gnu",
       "mode": "native",
-      "reason": "Pinned Cabal revision requires base <0 outside Windows unless allow-non-windows is enabled; that flag is disabled in this snapshot. Requires Windows dnsapi and windns.h.",
-      "target": "aarch64-unknown-linux-gnu"
+      "reason": "Pinned Cabal revision requires base <0 outside Windows unless allow-non-windows is enabled; that flag is disabled in this snapshot. Requires Windows dnsapi and windns.h."
     }
   ],
   "case_ids": [
